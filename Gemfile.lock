@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (2.0.1)
     actioncable (8.0.2)
       actionpack (= 8.0.2)
       activesupport (= 8.0.2)
@@ -74,6 +75,7 @@ GEM
       uri (>= 0.13.1)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    afm (0.2.2)
     ast (2.4.3)
     base64 (0.3.0)
     bcrypt_pbkdf (1.1.1-arm64-darwin)
@@ -114,6 +116,7 @@ GEM
       raabro (~> 1.4)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    hashery (2.1.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     image_processing (1.14.0)
@@ -156,8 +159,7 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.3)
-    mini_magick (5.3.0)
-      logger
+    mini_magick (4.13.2)
     mini_mime (1.1.5)
     minitest (5.25.5)
     msgpack (1.8.0)
@@ -183,6 +185,12 @@ GEM
     parser (3.3.9.0)
       ast (~> 2.4.1)
       racc
+    pdf-reader (2.14.1)
+      Ascii85 (>= 1.0, < 3.0, != 2.0.0)
+      afm (~> 0.2.1)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pg (1.6.0-arm64-darwin)
     pp (0.6.2)
       prettyprint
@@ -246,6 +254,7 @@ GEM
     reline (0.6.2)
       io-console (~> 0.5)
     rexml (3.4.1)
+    rtesseract (3.1.4)
     rubocop (1.79.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -275,6 +284,7 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
+    ruby-rc4 (0.1.5)
     ruby-vips (2.2.4)
       ffi (~> 1.12)
       logger
@@ -315,6 +325,8 @@ GEM
     thor (1.4.0)
     thruster (0.1.14-arm64-darwin)
     timeout (0.4.3)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
     turbo-rails (2.0.16)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
@@ -351,10 +363,13 @@ DEPENDENCIES
   importmap-rails
   jbuilder
   kamal
+  mini_magick (~> 4.11)
+  pdf-reader (~> 2.11)
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
   rails (~> 8.0.2)
+  rtesseract (~> 3.1)
   rubocop-rails-omakase
   selenium-webdriver
   solid_cable

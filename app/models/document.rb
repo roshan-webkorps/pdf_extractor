@@ -61,4 +61,29 @@ class Document < ApplicationRecord
       error_message: error_msg
     )
   end
+
+  def total_pos_count
+    return 0 unless extracted_data&.dig("total_pos")
+    extracted_data["total_pos"]
+  end
+
+  def total_line_items_count
+    return 0 unless extracted_data&.dig("total_line_items")
+    extracted_data["total_line_items"]
+  end
+
+  def excel_data
+    return [] unless extracted_data&.dig("excel_data")
+    extracted_data["excel_data"]
+  end
+
+  def raw_ocr_text
+    return "" unless extracted_data&.dig("raw_text")
+    extracted_data["raw_text"]
+  end
+
+  def parsed_purchase_orders
+    return [] unless extracted_data&.dig("parsed_pos")
+    extracted_data["parsed_pos"]
+  end
 end
