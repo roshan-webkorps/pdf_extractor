@@ -1,6 +1,4 @@
 class OcrService
-  include RTesseract
-
   def initialize(file_path)
     @file_path = file_path
     @extracted_text = ""

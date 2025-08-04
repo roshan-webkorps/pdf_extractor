@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import DocumentSummary from '../components/DocumentSummary';
 import ExtractedDataTable from '../components/ExtractedDataTable';
-import DataExportOptions from '../components/DataExportOptions';
 import { documentsAPI, downloadBlob } from '../utils/api';
 import { navigateToHome } from '../utils/navigation';
 
@@ -36,7 +35,6 @@ const ShowPage = ({ documentId }) => {
   };
 
   const handleBack = () => {
-    // window.location.href = '/';
     navigateToHome();
   };
 
@@ -179,19 +177,10 @@ const ShowPage = ({ documentId }) => {
       {document.status === 'completed' && (
         <div className="data-display-section">
           {document.total_line_items > 0 ? (
-            <>
-              {/* Export Options */}
-              <DataExportOptions 
-                document={document}
-                onExport={handleExport}
-              />
-              
-              {/* Data Table */}
-              <ExtractedDataTable 
-                data={document.excel_data || []} 
-                documentName={document.name}
-              />
-            </>
+            <ExtractedDataTable 
+              data={document.excel_data || []} 
+              documentName={document.name}
+            />
           ) : (
             <div className="no-data-state">
               <div className="no-data-icon">📄</div>

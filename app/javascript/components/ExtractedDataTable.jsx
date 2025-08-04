@@ -1,11 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const ExtractedDataTable = ({ data, documentName }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(50);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortColumn, setSortColumn] = useState('');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage] = useState(50)
 
   if (!data || data.length === 0) {
     return (
@@ -14,101 +11,75 @@ const ExtractedDataTable = ({ data, documentName }) => {
         <h3>No data extracted</h3>
         <p>This document didn't contain any extractable purchase order data.</p>
       </div>
-    );
+    )
   }
 
-  // Filter data based on search term
-  const filteredData = data.filter(row => {
-    const searchLower = searchTerm.toLowerCase();
-    return Object.values(row).some(value => 
-      value && value.toString().toLowerCase().includes(searchLower)
-    );
-  });
+  // Paginate data (no search, no sorting)
+  const totalPages = Math.ceil(data.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage)
 
-  // Sort data
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (!sortColumn) return 0;
-    
-    const aVal = a[sortColumn] || '';
-    const bVal = b[sortColumn] || '';
-    
-    if (sortDirection === 'asc') {
-      return aVal.toString().localeCompare(bVal.toString());
-    } else {
-      return bVal.toString().localeCompare(aVal.toString());
-    }
-  });
-
-  // Paginate data
-  const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = sortedData.slice(startIndex, startIndex + itemsPerPage);
-
-  const handleSort = (column) => {
-    if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortColumn(column);
-      setSortDirection('asc');
-    }
-  };
-
-  const getSortIcon = (column) => {
-    if (sortColumn !== column) return '↕️';
-    return sortDirection === 'asc' ? '↑' : '↓';
-  };
-
-  // Define the columns we want to display (key ones)
-  const displayColumns = [
-    { key: 'buyer_po_num', label: 'PO Number' },
+  // All 39 columns in the correct order
+  const allColumns = [
+    { key: 'factory', label: 'Factory' },
+    { key: 'ship_under_po_ref', label: 'Ship Under PO Ref' },
+    { key: 'article', label: 'Article' },
     { key: 'buyer', label: 'Buyer' },
-    { key: 'ship_under_po_ref', label: 'Material' },
+    { key: 'buyer_division_dept', label: 'Buyer Division/Dept' },
     { key: 'currency', label: 'Currency' },
     { key: 'season', label: 'Season' },
+    { key: 'country_of_origin', label: 'Country of Origin' },
+    { key: 'place_of_receipt_by_pre_carrier', label: 'Place of Receipt by Pre-Carrier' },
+    { key: 'prod_capacity_booking_no', label: 'Prod. Capacity Booking No' },
+    { key: 'order_initiation_date', label: 'Order Initiation Date' },
+    { key: 'payment_terms', label: 'Payment Terms' },
+    { key: 'buyer_po_num', label: 'Buyer PO Num' },
+    { key: 'summary_buyer_order_ref', label: 'Summary Buyer Order Ref' },
+    { key: 'market_buyer_order_ref', label: 'Market Buyer Order Ref' },
+    { key: 'destination_buyer_order_ref', label: 'Destination Buyer Order Ref' },
+    { key: 'delivery_buyer_order_ref', label: 'Delivery Buyer Order Ref' },
+    { key: 'buyer_order_date', label: 'Buyer Order Date' },
+    { key: 'order_type', label: 'Order Type' },
+    { key: 'mode_of_shipment', label: 'Mode of Shipment' },
+    { key: 'buyer_delivery_date', label: 'Buyer Delivery Date' },
+    { key: 'oc_delivery_date', label: 'OC Delivery Date' },
+    { key: 'pcd_date', label: 'PCD Date' },
+    { key: 'original_gac_date', label: 'Original GAC Date' },
+    { key: 'gac_date', label: 'GAC Date' },
+    { key: 'raw_material_eta', label: 'Raw Material ETA' },
+    { key: 'country_of_final_destination', label: 'Country of Final Destination' },
+    { key: 'final_destination', label: 'Final Destination' },
+    { key: 'market', label: 'Market' },
+    { key: 'buyer_style_ref', label: 'Buyer Style Ref.' },
+    { key: 'packing_type', label: 'Packing Type' },
+    { key: 'packing_option_flat_pack', label: 'Packing Option/Flat Pack)' },
     { key: 'color', label: 'Color' },
     { key: 'size', label: 'Size' },
-    { key: 'total_qty', label: 'Quantity' },
+    { key: 'total_qty', label: 'Total Qty' },
     { key: 'price', label: 'Price' },
-    { key: 'buyer_order_date', label: 'Order Date' },
-    { key: 'buyer_delivery_date', label: 'Delivery Date' }
-  ];
+    { key: 'units', label: 'Units' },
+    { key: 'delivery_terms', label: 'Delivery Terms' },
+    { key: 'zone', label: 'Zone' }
+  ]
 
   return (
     <div className="extracted-data-table">
       <div className="table-header">
         <div className="table-info">
           <h3>Extracted Data</h3>
-          <p>{filteredData.length} of {data.length} line items</p>
+          <p>{data.length} line items</p>
         </div>
         
-        <div className="table-controls">
-          <input
-            type="text"
-            placeholder="Search data..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="search-input"
-          />
-        </div>
+        {/* Remove search controls */}
       </div>
 
       <div className="table-container">
         <table className="data-table">
           <thead>
             <tr>
-              {displayColumns.map(column => (
-                <th 
-                  key={column.key}
-                  onClick={() => handleSort(column.key)}
-                  className="sortable-header"
-                >
-                  <div className="header-content">
-                    <span>{column.label}</span>
-                    <span className="sort-icon">{getSortIcon(column.key)}</span>
-                  </div>
+              {allColumns.map(column => (
+                <th key={column.key}>
+                  {column.label}
                 </th>
               ))}
             </tr>
@@ -116,7 +87,7 @@ const ExtractedDataTable = ({ data, documentName }) => {
           <tbody>
             {paginatedData.map((row, index) => (
               <tr key={startIndex + index}>
-                {displayColumns.map(column => (
+                {allColumns.map(column => (
                   <td key={column.key}>
                     <div className="cell-content">
                       {row[column.key] || '-'}

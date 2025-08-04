@@ -10,7 +10,6 @@ const HomePage = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [message, setMessage] = useState(null);
-  const [exportSummary, setExportSummary] = useState(null);
 
   useEffect(() => {
     const hasProcessingDocs = documents.some(doc => doc.status === 'processing' || doc.status === 'pending');
@@ -23,7 +22,6 @@ const HomePage = () => {
 
   useEffect(() => {
     loadDocuments();
-    loadExportSummary();
   }, []);
 
   const loadDocuments = async () => {
@@ -45,15 +43,6 @@ const HomePage = () => {
     }
   };
 
-  const loadExportSummary = async () => {
-    try {
-      const summary = await documentsAPI.getExportSummary();
-      setExportSummary(summary);
-    } catch (error) {
-      console.error('Failed to load export summary:', error);
-    }
-  };
-
   const handleFileUpload = async (files) => {
     setIsUploading(true);
     try {
@@ -70,7 +59,6 @@ const HomePage = () => {
   };
 
   const handleView = (documentId) => {
-    // window.location.href = `/documents/${documentId}`;
     navigateToDocument(documentId);
   };
 
@@ -90,7 +78,6 @@ const HomePage = () => {
       await documentsAPI.delete(documentId);
       showMessage('success', 'Document deleted successfully');
       await loadDocuments();
-      await loadExportSummary();
     } catch (error) {
       console.error('Delete failed:', error);
       showMessage('error', 'Failed to delete document');
@@ -146,7 +133,6 @@ const HomePage = () => {
       <div className="page-header">
         <div className="header-content">
           <h1>OCR Document Processor</h1>
-          <p>Upload purchase order documents and extract data automatically</p>
         </div>
         <div className="header-actions">
           <button 
@@ -155,14 +141,12 @@ const HomePage = () => {
           >
             Upload Documents
           </button>
-          {exportSummary && exportSummary.exportable_documents > 0 && (
-            <button 
-              className="btn btn-success"
-              onClick={handleExportAll}
-            >
-              Export All ({exportSummary.exportable_documents} docs)
-            </button>
-          )}
+          <button 
+            className="btn btn-success"
+            onClick={handleExportAll}
+          >
+            Export All
+          </button>
         </div>
       </div>
 
@@ -171,27 +155,6 @@ const HomePage = () => {
         <div className={`message message-${message.type}`}>
           <span>{message.text}</span>
           <button className="message-close" onClick={closeMessage}>×</button>
-        </div>
-      )}
-
-      {/* Export Summary */}
-      {exportSummary && exportSummary.exportable_documents > 0 && (
-        <div className="export-summary">
-          <h3>Export Summary</h3>
-          <div className="summary-stats">
-            <div className="stat">
-              <span className="stat-number">{exportSummary.exportable_documents}</span>
-              <span className="stat-label">Completed Documents</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">{exportSummary.unique_pos}</span>
-              <span className="stat-label">Purchase Orders</span>
-            </div>
-            <div className="stat">
-              <span className="stat-number">{exportSummary.total_rows}</span>
-              <span className="stat-label">Line Items</span>
-            </div>
-          </div>
         </div>
       )}
 
