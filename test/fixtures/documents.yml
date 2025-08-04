@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  status: MyString
+  extracted_data: 
+  error_message: MyText
+  processed_at: 2025-08-04 16:12:12
+
+two:
+  name: MyString
+  status: MyString
+  extracted_data: 
+  error_message: MyText
+  processed_at: 2025-08-04 16:12:12
