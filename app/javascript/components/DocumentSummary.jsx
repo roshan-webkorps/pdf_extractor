@@ -65,27 +65,6 @@ const DocumentSummary = ({ document }) => {
               <label>Line Items</label>
               <value>{document.total_line_items}</value>
             </div>
-            
-            {document.export_summary && (
-              <>
-                <div className="summary-item">
-                  <label>Unique Buyers</label>
-                  <value>{document.export_summary.unique_buyers || 0}</value>
-                </div>
-                
-                <div className="summary-item">
-                  <label>Total Quantity</label>
-                  <value>{document.export_summary.total_quantity || 0}</value>
-                </div>
-                
-                {document.export_summary.currencies && document.export_summary.currencies.length > 0 && (
-                  <div className="summary-item">
-                    <label>Currencies</label>
-                    <value>{document.export_summary.currencies.join(', ')}</value>
-                  </div>
-                )}
-              </>
-            )}
           </>
         )}
         
