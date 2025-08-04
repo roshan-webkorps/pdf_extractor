@@ -1,8 +1,6 @@
-# app/controllers/documents_controller.rb
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [ :show, :update, :destroy ]
+  before_action :set_document, only: [ :show, :update, :destroy, :download_original, :export ]
 
-  # GET /documents
   def index
     @documents = Document.order(created_at: :desc)
 
@@ -12,7 +10,6 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # GET /documents/:id
   def show
     respond_to do |format|
       format.html
@@ -20,14 +17,14 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # POST /documents
   def create
     @document = Document.new(document_params)
 
     if @document.save
-      # TODO: Enqueue background job in Phase 3
+      DocumentProcessingJob.perform_later(@document.id)
+
       render json: {
-        message: "File uploaded successfully",
+        message: "File uploaded successfully and processing started",
         document: document_json(@document)
       }, status: :created
     else
@@ -37,7 +34,6 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # PUT /documents/:id
   def update
     if @document.update(update_params)
       render json: {
@@ -51,12 +47,33 @@ class DocumentsController < ApplicationController
     end
   end
 
-  # DELETE /documents/:id
   def destroy
     @document.file.purge if @document.file.attached?
     @document.destroy
 
     render json: { message: "Document deleted successfully" }
+  end
+
+  def download_original
+    unless @document.file.attached?
+      return render json: { error: "No file attached" }, status: :not_found
+    end
+
+    redirect_to rails_blob_path(@document.file, disposition: "attachment")
+  end
+
+  def export
+    unless @document.completed?
+      return render json: { error: "Document processing not completed" }, status: :unprocessable_entity
+    end
+
+    # This will be implemented in Phase 4
+    render json: { message: "Individual export - coming in Phase 4" }
+  end
+
+  def export_all
+    # This will be implemented in Phase 4
+    render json: { message: "Export all - coming in Phase 4" }
   end
 
   private
@@ -88,7 +105,9 @@ class DocumentsController < ApplicationController
       created_at: document.created_at,
       updated_at: document.updated_at,
       processed_at: document.processed_at,
-      error_message: document.error_message
+      error_message: document.error_message,
+      total_pos: document.total_pos_count,
+      total_line_items: document.total_line_items_count
     }
   end
 end

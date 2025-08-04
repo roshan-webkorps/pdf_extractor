@@ -42,7 +42,12 @@ class Document < ApplicationRecord
   end
 
   def mark_as_processing!
-    update!(status: "processing", processed_at: nil, error_message: nil)
+    update!(
+      status: "processing",
+      processed_at: nil,
+      error_message: nil,
+      extracted_data: nil
+    )
   end
 
   def mark_as_completed!(data = {})
@@ -85,5 +90,16 @@ class Document < ApplicationRecord
   def parsed_purchase_orders
     return [] unless extracted_data&.dig("parsed_pos")
     extracted_data["parsed_pos"]
+  end
+
+  def processing_summary
+    return {} unless extracted_data
+
+    {
+      total_pos: total_pos_count,
+      total_line_items: total_line_items_count,
+      processed_at: processed_at,
+      has_data: excel_data.any?
+    }
   end
 end

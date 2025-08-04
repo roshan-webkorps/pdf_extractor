@@ -17,6 +17,7 @@ module PdfExtractor
     config.autoload_lib(ignore: %w[assets tasks])
     config.log_level = :info
     config.logger = ActiveSupport::Logger.new(STDOUT)
+    config.active_job.queue_adapter = :async
 
     # Configuration for the application, engines, and railties goes here.
     #
