@@ -9,6 +9,7 @@ Rails.application.routes.draw do
 
     collection do
       get :export_all
+      get :export_all_summary
     end
   end
 

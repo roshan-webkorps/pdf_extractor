@@ -102,4 +102,36 @@ class Document < ApplicationRecord
       has_data: excel_data.any?
     }
   end
+
+  def self.export_all_summary
+    completed_docs = completed.includes(:file_attachment)
+    docs_with_data = completed_docs.select { |doc| doc.excel_data.present? }
+
+    return { total_documents: 0, exportable_documents: 0 } if docs_with_data.empty?
+
+    all_excel_data = docs_with_data.flat_map(&:excel_data)
+
+    {
+      total_documents: completed_docs.count,
+      exportable_documents: docs_with_data.count,
+      total_rows: all_excel_data.length,
+      unique_pos: all_excel_data.map { |row| row["buyer_po_num"] }.compact.uniq.length,
+      unique_buyers: all_excel_data.map { |row| row["buyer"] }.compact.uniq.length,
+      total_quantity: all_excel_data.sum { |row| row["total_qty"].to_i },
+      currencies: all_excel_data.map { |row| row["currency"] }.compact.uniq
+    }
+  end
+
+  def export_summary
+    return {} unless completed? && excel_data.present?
+
+    {
+      total_rows: excel_data.length,
+      unique_pos: excel_data.map { |row| row["buyer_po_num"] }.compact.uniq.length,
+      unique_buyers: excel_data.map { |row| row["buyer"] }.compact.uniq.length,
+      total_quantity: excel_data.sum { |row| row["total_qty"].to_i },
+      currencies: excel_data.map { |row| row["currency"] }.compact.uniq,
+      has_exportable_data: excel_data.any?
+    }
+  end
 end

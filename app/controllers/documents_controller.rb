@@ -67,13 +67,58 @@ class DocumentsController < ApplicationController
       return render json: { error: "Document processing not completed" }, status: :unprocessable_entity
     end
 
-    # This will be implemented in Phase 4
-    render json: { message: "Individual export - coming in Phase 4" }
+    unless @document.excel_data.present?
+      return render json: { error: "No data available for export" }, status: :unprocessable_entity
+    end
+
+    begin
+      excel_service = ExcelExportService.new([ @document ])
+      package = excel_service.generate
+
+      filename = "#{sanitize_filename(@document.name)}_export_#{Time.current.strftime('%Y%m%d_%H%M%S')}.xlsx"
+
+      send_data package.to_stream.read,
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                filename: filename,
+                disposition: "attachment"
+
+    rescue => e
+      handle_export_error(e, "Individual document export")
+    end
   end
 
   def export_all
-    # This will be implemented in Phase 4
-    render json: { message: "Export all - coming in Phase 4" }
+    completed_documents = Document.completed.includes(:file_attachment)
+
+    if completed_documents.empty?
+      return render json: { error: "No completed documents available for export" }, status: :unprocessable_entity
+    end
+
+    documents_with_data = completed_documents.select { |doc| doc.excel_data.present? }
+
+    if documents_with_data.empty?
+      return render json: { error: "No documents contain exportable data" }, status: :unprocessable_entity
+    end
+
+    begin
+      excel_service = ExcelExportService.new(documents_with_data)
+      package = excel_service.generate
+
+      filename = "all_purchase_orders_export_#{Time.current.strftime('%Y%m%d_%H%M%S')}_#{documents_with_data.count}_docs.xlsx"
+
+      send_data package.to_stream.read,
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                filename: filename,
+                disposition: "attachment"
+
+    rescue => e
+      handle_export_error(e, "Export all documents")
+    end
+  end
+
+  def export_all_summary
+    summary = Document.export_all_summary
+    render json: summary
   end
 
   private
@@ -94,8 +139,12 @@ class DocumentsController < ApplicationController
     @documents.map { |doc| document_json(doc) }
   end
 
+  def sanitize_filename(filename)
+    filename.gsub(/[^\w\s_-]+/, "_").gsub(/\s+/, "_").strip
+  end
+
   def document_json(document)
-    {
+    base_data = {
       id: document.id,
       name: document.name,
       status: document.status,
@@ -108,6 +157,21 @@ class DocumentsController < ApplicationController
       error_message: document.error_message,
       total_pos: document.total_pos_count,
       total_line_items: document.total_line_items_count
+    }
+
+    if document.completed?
+      base_data[:export_summary] = document.export_summary
+    end
+
+    base_data
+  end
+
+  def documents_json
+    documents_data = @documents.map { |doc| document_json(doc) }
+
+    {
+      documents: documents_data,
+      export_all_summary: Document.export_all_summary
     }
   end
 end
