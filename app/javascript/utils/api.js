@@ -8,11 +8,14 @@ const getCsrfToken = () => {
 const apiRequest = async (url, options = {}) => {
   const defaultOptions = {
     headers: {
-      'Content-Type': 'application/json',
       'X-CSRF-Token': getCsrfToken(),
       ...options.headers,
     },
   };
+
+  if (options.body && typeof options.body === 'string') {
+    defaultOptions.headers['Content-Type'] = 'application/json';
+  }
 
   const config = { ...defaultOptions, ...options };
   
@@ -32,6 +35,41 @@ const apiRequest = async (url, options = {}) => {
   } catch (error) {
     console.error('API request failed:', error);
     throw error;
+  }
+};
+
+export const authAPI = {
+  login: async (credentials) => {
+    const formData = new FormData();
+    formData.append('email_address', credentials.email_address);
+    formData.append('password', credentials.password);
+    
+    try {
+      const response = await fetch('/login', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': getCsrfToken(),
+          'Accept': 'application/json',
+        },
+        body: formData,
+      });
+      
+      const responseText = await response.text();
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
+      return JSON.parse(responseText);
+    } catch (error) {
+      throw error;
+    }
+  },
+  
+  logout: () => {
+    return apiRequest('/logout', {
+      method: 'DELETE',
+    });
   }
 };
 

@@ -7,16 +7,35 @@
     <%= csp_meta_tag %>
     
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
   <body>
-    <div class="app-container">
-      
-      <main class="app-main">
-        <%= yield %>
-      </main>
-    </div>
+    <% if logged_in? %>
+      <div class="app-container">
+        <header class="app-header">
+          <div class="header-content">
+          </div>
+          <div class="header-right">
+            <div class="user-info">
+              <span class="user-email">👤 <%= current_user.email_address %></span>
+              <%= button_to "Sign Out", logout_path, 
+                  method: :delete, 
+                  class: "btn btn-outline logout-btn",
+                  form: { style: "display: inline;" },
+                  data: { 
+                    confirm: "Are you sure you want to sign out?"
+                  } %>
+            </div>
+          </div>
+        </header>
+        
+        <main class="app-main">
+          <%= yield %>
+        </main>
+      </div>
+    <% else %>
+      <%= yield %>
+    <% end %>
   </body>
 </html>

@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   root "documents#index"
 
+  get "/login", to: "sessions#new", as: "new_session"
+  post "/login", to: "sessions#create", as: "session"
+  delete "/logout", to: "sessions#destroy"
+
   resources :documents, only: [ :index, :show, :create, :update, :destroy ] do
     member do
       get :download_original
