@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import DocumentsList from '../components/DocumentsList';
 import FileUpload from '../components/FileUpload';
 import { documentsAPI, downloadBlob } from '../utils/api';
+import { navigateToDocument } from '../utils/navigation';
 
 const HomePage = () => {
   const [documents, setDocuments] = useState([]);
@@ -69,7 +70,8 @@ const HomePage = () => {
   };
 
   const handleView = (documentId) => {
-    window.location.href = `/documents/${documentId}`;
+    // window.location.href = `/documents/${documentId}`;
+    navigateToDocument(documentId);
   };
 
   const handleRename = async (documentId, data) => {

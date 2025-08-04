@@ -161,6 +161,7 @@ class DocumentsController < ApplicationController
 
     if document.completed?
       base_data[:export_summary] = document.export_summary
+      base_data[:excel_data] = document.excel_data
     end
 
     base_data

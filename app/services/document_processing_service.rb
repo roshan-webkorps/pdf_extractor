@@ -52,6 +52,7 @@ class DocumentProcessingService
     temp_file = Tempfile.new([ "document", extension ])
 
     @document.file.open do |file|
+      temp_file.binmode
       temp_file.write(file.read)
     end
 
