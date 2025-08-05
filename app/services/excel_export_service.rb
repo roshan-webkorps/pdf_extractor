@@ -56,7 +56,16 @@ class ExcelExportService
       "Price",
       "Units",
       "Delivery Terms",
-      "Zone"
+      "Zone",
+      "Internal Lot No.",
+      "Buyer Lot No.",
+      "Delivery OCID",
+      "Fulfillment Type",
+      "Initial PCD Date",
+      "First Buyer Delivery Date",
+      "Packing Code (SKU)",
+      "Make to Stock",
+      "Split"
     ]
 
     worksheet.add_row headers, style: header_style(worksheet)
@@ -106,7 +115,16 @@ class ExcelExportService
           row_data["price"],
           row_data["units"],
           row_data["delivery_terms"],
-          row_data["zone"]
+          row_data["zone"],
+          row_data["internal_lot_no"],
+          row_data["buyer_lot_no"],
+          row_data["delivery_ocid"],
+          row_data["fulfillment_type"],
+          row_data["initial_pcd_date"],
+          row_data["first_buyer_delivery_date"],
+          row_data["packing_code"],
+          row_data["make_to_stock"],
+          row_data["split"]
         ])
       end
     end

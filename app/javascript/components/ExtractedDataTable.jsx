@@ -59,7 +59,16 @@ const ExtractedDataTable = ({ data, documentName }) => {
     { key: 'price', label: 'Price' },
     { key: 'units', label: 'Units' },
     { key: 'delivery_terms', label: 'Delivery Terms' },
-    { key: 'zone', label: 'Zone' }
+    { key: 'zone', label: 'Zone' },
+    { key: 'internal_lot_no', label: 'Internal Lot No.' },
+    { key: 'buyer_lot_no', label: 'Buyer Lot No.' },
+    { key: 'delivery_ocid', label: 'Delivery OCID' },
+    { key: 'fulfillment_type', label: 'Fulfillment Type' },
+    { key: 'initial_pcd_date', label: 'Initial PCD Date' },
+    { key: 'first_buyer_delivery_date', label: 'First Buyer Delivery Date' },
+    { key: 'packing_code', label: 'Packing Code (SKU)' },
+    { key: 'make_to_stock', label: 'Make to Stock' },
+    { key: 'split', label: 'Split' }
   ]
 
   return (

@@ -54,20 +54,6 @@ const DocumentSummary = ({ document }) => {
           </div>
         )}
         
-        {document.status === 'completed' && (
-          <>
-            <div className="summary-item">
-              <label>Purchase Orders</label>
-              <value>{document.total_pos}</value>
-            </div>
-            
-            <div className="summary-item">
-              <label>Line Items</label>
-              <value>{document.total_line_items}</value>
-            </div>
-          </>
-        )}
-        
         {document.status === 'failed' && document.error_message && (
           <div className="summary-item error-item">
             <label>Error</label>

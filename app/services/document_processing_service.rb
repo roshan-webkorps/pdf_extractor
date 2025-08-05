@@ -11,29 +11,23 @@ class DocumentProcessingService
     begin
       temp_file = create_temp_file
 
-      Rails.logger.info "Starting OCR extraction for document #{@document.id}"
-      ocr_service = OcrService.new(temp_file.path)
-      extracted_text = ocr_service.extract_text
+      Rails.logger.info "Starting Gemini extraction for document #{@document.id}"
+      gemini_service = GeminiOcrService.new(temp_file.path)
+      excel_data = gemini_service.extract_text
 
-      Rails.logger.info "Parsing PO data for document #{@document.id}"
-      parser = PoParserService.new(extracted_text)
-      parsed_pos = parser.parse
+      if excel_data.is_a?(Array) && excel_data.any?
+        extracted_data = {
+          extraction_method: "gemini",
+          excel_data: excel_data,
+          total_line_items: excel_data.length,
+          processed_at: Time.current
+        }
 
-      Rails.logger.info "Mapping data to Excel format for document #{@document.id}"
-      mapper = DataMappingService.new(parsed_pos)
-      excel_data = mapper.map_to_excel_format
-
-      extracted_data = {
-        raw_text: extracted_text,
-        parsed_pos: parsed_pos,
-        excel_data: excel_data,
-        total_pos: parsed_pos.length,
-        total_line_items: excel_data.length,
-        processed_at: Time.current
-      }
-
-      @document.mark_as_completed!(extracted_data)
-      Rails.logger.info "Successfully processed document #{@document.id}"
+        @document.mark_as_completed!(extracted_data)
+        Rails.logger.info "Successfully processed document #{@document.id} with #{excel_data.length} line items"
+      else
+        raise "No data extracted from document"
+      end
 
     rescue => e
       Rails.logger.error "Failed to process document #{@document.id}: #{e.message}"
