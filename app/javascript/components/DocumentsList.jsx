@@ -50,7 +50,6 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
           <tr>
             <th>Document</th>
             <th>Status</th>
-            <th>Data Extracted</th>
             <th>Size</th>
             <th>Uploaded</th>
             <th>Actions</th>
@@ -71,23 +70,6 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
                   <div className="error-message" title={document.error_message}>
                     ⚠️ Error
                   </div>
-                )}
-              </td>
-              <td>
-                {document.status === 'completed' && (
-                  <div className="data-summary">
-                    <div>{document.total_pos} PO{document.total_pos !== 1 ? 's' : ''}</div>
-                    <div>{document.total_line_items} line items</div>
-                  </div>
-                )}
-                {document.status === 'processing' && (
-                  <div className="processing-indicator">Processing...</div>
-                )}
-                {document.status === 'failed' && (
-                  <div className="failed-indicator">-</div>
-                )}
-                {document.status === 'pending' && (
-                  <div className="pending-indicator">Queued</div>
                 )}
               </td>
               <td>{formatFileSize(document.file_size)}</td>
