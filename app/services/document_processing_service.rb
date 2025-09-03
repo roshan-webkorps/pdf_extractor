@@ -11,22 +11,15 @@ class DocumentProcessingService
     begin
       temp_file = create_temp_file
 
-      Rails.logger.info "Starting Gemini extraction for document #{@document.id}"
-      gemini_service = GeminiOcrService.new(temp_file.path)
-      excel_data = gemini_service.extract_text
+      # Check if PDF should be split
+      pdf_splitter = PdfSplittingService.new(temp_file.path)
 
-      if excel_data.is_a?(Array) && excel_data.any?
-        extracted_data = {
-          extraction_method: "gemini",
-          excel_data: excel_data,
-          total_line_items: excel_data.length,
-          processed_at: Time.current
-        }
-
-        @document.mark_as_completed!(extracted_data)
-        Rails.logger.info "Successfully processed document #{@document.id} with #{excel_data.length} line items"
+      if pdf_splitter.should_split?
+        Rails.logger.info "Document #{@document.id} has >10 POs, splitting into batches"
+        process_with_splitting(pdf_splitter)
       else
-        raise "No data extracted from document"
+        Rails.logger.info "Document #{@document.id} has ≤10 POs, processing normally"
+        process_single_pdf(temp_file.path)
       end
 
     rescue => e
@@ -40,6 +33,76 @@ class DocumentProcessingService
   end
 
   private
+
+  def process_with_splitting(pdf_splitter)
+    batches = pdf_splitter.split_into_batches
+    all_excel_data = []
+    total_pos = 0
+
+    Rails.logger.info "Processing #{batches.length} batches for document #{@document.id}"
+
+    batches.each_with_index do |batch, index|
+      Rails.logger.info "Processing batch #{index + 1}/#{batches.length} (#{batch[:po_count]} POs)"
+
+      gemini_service = GeminiOcrService.new(batch[:file_path])
+      batch_excel_data = gemini_service.extract_text
+
+      # openai_service = OpenaiOcrService.new(batch[:file_path])
+      # batch_excel_data = openai_service.extract_text
+
+      if batch_excel_data.is_a?(Array) && batch_excel_data.any?
+        all_excel_data.concat(batch_excel_data)
+        total_pos += batch[:po_count]
+        Rails.logger.info "Batch #{index + 1} completed: #{batch_excel_data.length} line items extracted"
+      else
+        Rails.logger.warn "Batch #{index + 1} returned no data"
+      end
+
+      sleep(1) if index < batches.length - 1
+    end
+
+    # Cleanup split files AFTER processing
+    pdf_splitter.cleanup_split_files(batches)
+
+    if all_excel_data.any?
+      extracted_data = {
+        extraction_method: "gemini_split",
+        excel_data: all_excel_data,
+        total_line_items: all_excel_data.length,
+        total_pos: total_pos,
+        batches_processed: batches.length,
+        processed_at: Time.current
+      }
+
+      @document.mark_as_completed!(extracted_data)
+      Rails.logger.info "Successfully processed document #{@document.id} with #{batches.length} batches, #{total_pos} POs, #{all_excel_data.length} line items"
+    else
+      raise "No data extracted from any batch"
+    end
+  end
+
+  def process_single_pdf(file_path)
+    Rails.logger.info "Starting Gemini extraction for document #{@document.id}"
+    gemini_service = GeminiOcrService.new(file_path)
+    excel_data = gemini_service.extract_text
+
+    # openai_service = OpenaiOcrService.new(file_path)
+    # excel_data = openai_service.extract_text
+
+    if excel_data.is_a?(Array) && excel_data.any?
+      extracted_data = {
+        extraction_method: "gemini",
+        excel_data: excel_data,
+        total_line_items: excel_data.length,
+        processed_at: Time.current
+      }
+
+      @document.mark_as_completed!(extracted_data)
+      Rails.logger.info "Successfully processed document #{@document.id} with #{excel_data.length} line items"
+    else
+      raise "No data extracted from document"
+    end
+  end
 
   def create_temp_file
     extension = File.extname(@document.original_filename).downcase

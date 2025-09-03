@@ -50,6 +50,9 @@ gem "axlsx_rails"
 gem "httparty"
 gem "dotenv"
 
+gem "combine_pdf"
+gem "ruby-openai"
+
 gem "jsbundling-rails"
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

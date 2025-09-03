@@ -1,30 +1,27 @@
-class GeminiOcrService
+# app/services/openai_ocr_service.rb
+class OpenaiOcrService
   require "base64"
-  require "httparty"
 
   def initialize(file_path)
     @file_path = file_path
+    @client = OpenAI::Client.new(access_token: ENV["OPENAI_API_KEY"])
   end
 
   def extract_text
-    # Read and encode the PDF
-    pdf_content = File.binread(@file_path)
-    base64_content = Base64.strict_encode64(pdf_content)
-
     # Build focused prompt for PO extraction
     prompt = build_po_extraction_prompt
 
-    # Send to Gemini
-    extracted_data = send_gemini_request(base64_content, prompt)
+    # Send to OpenAI (now uploads file and uses file_id)
+    extracted_data = send_openai_request(nil, prompt)
 
     # Convert to Excel format
     if extracted_data.is_a?(Array) && extracted_data.any?
       excel_data = convert_to_excel_format(extracted_data)
 
-      Rails.logger.info "Gemini extracted #{extracted_data.length} POs with #{excel_data.length} total line items"
+      Rails.logger.info "OpenAI extracted #{extracted_data.length} POs with #{excel_data.length} total line items"
       excel_data
     else
-      Rails.logger.error "Gemini extraction failed or returned no data"
+      Rails.logger.error "OpenAI extraction failed or returned no data"
       []
     end
   end
@@ -78,114 +75,103 @@ class GeminiOcrService
       - "variant_material_code" in line items can have size suffixes
       - "base_material_code" in line items should match "ship_under_po_ref"
 
-      **EXAMPLE OUTPUT FORMAT:**
+      **CRITICAL OUTPUT FORMAT - MUST BE AN ARRAY:**
       [
         {
-          "po_number": "4531021625",
-          "buyer_company": "Levi Strauss Global Trading Co. Ltd",
+          "po_number": "2500043993",
+          "buyer_company": "LEVI STRAUSS DE MEXICO",
           "season": "251",
           "currency": "USD",
-          "buyer_order_date": "13.06.2024",
-          "buyer_delivery_date": "10.10.2024",
-          "ship_under_po_ref": "A5772-0014",
-          "delivery_country": "KOREA",
-          "unit_price": "9.78",
-          "ffc_description": "WASHINGTON STRIPE II",
-          "line_items": [
-            {
-              "variant_material_code": "A5772-0014",
-              "base_material_code": "A5772-0014",
-              "description": "CLASSIC WORKER -WORKWEAR WASHINGTON STRI",
-              "size": "M",
-              "quantity": "150",
-              "item_total": "1467.00"
-            }
-          ]
+          "buyer_order_date": "17.06.2024",
+          "buyer_delivery_date": "07.12.2024",
+          "ship_under_po_ref": "72625-0110",
+          "delivery_country": "Argentina",
+          "unit_price": "8.03",
+          "ffc_description": "",
+          "line_items": [...]
+        },
+        {
+          "po_number": "2500045247",
+          "buyer_company": "LEVI STRAUSS DE MEXICO",#{' '}
+          "season": "251",
+          "currency": "USD",
+          "buyer_order_date": "21.06.2024",
+          "buyer_delivery_date": "19.10.2024",
+          "ship_under_po_ref": "52669-0457",
+          "delivery_country": "Bolivia",
+          "unit_price": "7.00",
+          "ffc_description": "",
+          "line_items": [...]
         }
       ]
 
-      **IMPORTANT:**
-      - Return ONLY valid JSON array
-      - No explanations or markdown
-      - Empty string for missing fields, never null
-      - One object per PO, with line_items array
-      - Extract ALL line items with their actual sizes and quantities
-      - Always use BASE material codes for "ship_under_po_ref" (remove size suffixes)
-      - For dates, be very specific: "Original ExfacDate" NOT "Planned Del. Date"
+      **RETURN ARRAY FORMAT - NOT SINGLE OBJECT. EXTRACT ALL POS IN THE DOCUMENT.**
     PROMPT
   end
 
-  def send_gemini_request(base64_data, prompt)
+  def send_openai_request(base64_content, prompt)
     retries = 0
-    max_retries = 5
+    max_retries = 3
 
     begin
-      Rails.logger.info "Sending PDF to Gemini 1.5 Flash for extraction..."
-
-      response = HTTParty.post(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=#{ENV['GOOGLE_GEMINI_API_KEY']}",
-        headers: { "Content-Type" => "application/json" },
-        body: {
-          contents: [
+      response = @client.chat(
+        parameters: {
+          model: "gpt-4o-mini",  # Good choice - faster than gpt-4o
+          messages: [
             {
-              parts: [
-                { text: prompt },
+              role: "user",
+              content: [
+                { type: "text", text: prompt },
                 {
-                  inlineData: {
-                    mimeType: "application/pdf",
-                    data: base64_data
+                  type: "file",
+                  file: {
+                    filename: File.basename(@file_path),
+                    file_data: "data:application/pdf;base64,#{Base64.strict_encode64(File.binread(@file_path))}"
                   }
                 }
               ]
             }
           ],
-          generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 8192
-          }
-        }.to_json
+          max_tokens: 6144,  # Reduced from 8192 for faster processing
+          temperature: 0.1
+        }
       )
 
-      if response.code == 200
-        raw_response = JSON.parse(response.body).dig("candidates", 0, "content", "parts", 0, "text")
+      if response.dig("choices", 0, "message", "content")
+        raw_response = response.dig("choices", 0, "message", "content")
+        Rails.logger.info "Raw OpenAI response: #{raw_response[0..200]}..."
 
-        if raw_response
-          json_str = raw_response[/```json\s*(.*?)\s*```/m, 1]&.strip || raw_response.strip
-          parsed_data = JSON.parse(json_str)
-          Rails.logger.info "Gemini successfully extracted #{parsed_data.length} POs"
-          parsed_data
-        else
-          Rails.logger.error "Empty response from Gemini"
-          []
-        end
-      elsif response.code == 503
-        raise StandardError.new("Service overloaded (503)")
+        json_str = raw_response[/```json\s*(.*?)\s*```/m, 1]&.strip || raw_response.strip
+        parsed_data = JSON.parse(json_str)
+
+        final_data = parsed_data.is_a?(Array) ? parsed_data : [ parsed_data ]
+        Rails.logger.info "OpenAI extracted #{final_data.length} POs"
+        final_data
       else
-        Rails.logger.error "Gemini API failed (#{response.code}): #{response.body}"
+        Rails.logger.error "No content in OpenAI response"
         []
       end
 
-    rescue JSON::ParserError => e
-      Rails.logger.error "Failed to parse Gemini JSON response: #{e.message}"
-      []
-    rescue StandardError => e
-      if e.message.include?("Service overloaded") || e.message.include?("503")
-        retries += 1
-        if retries <= max_retries
-          Rails.logger.warn "Gemini overloaded, retrying in 5 seconds (attempt #{retries}/#{max_retries})"
-          sleep(5)
-          retry
-        else
-          Rails.logger.error "Gemini failed after #{max_retries} retries: #{e.message}"
-          []
-        end
+    rescue Net::ReadTimeout => e
+      retries += 1
+      if retries <= max_retries
+        Rails.logger.warn "OpenAI timeout (attempt #{retries}/#{max_retries}): #{e.message}"
+        sleep(5 * retries)  # 5, 10, 15 seconds
+        retry
       else
-        Rails.logger.error "Gemini request failed: #{e.message}"
+        Rails.logger.error "OpenAI timed out after #{max_retries} retries"
         []
       end
     rescue => e
-      Rails.logger.error "Gemini request failed: #{e.message}"
-      []
+      retries += 1
+      if retries <= max_retries
+        Rails.logger.warn "OpenAI request failed (attempt #{retries}/#{max_retries}): #{e.message}"
+        sleep(2 ** retries)
+        retry
+      else
+        Rails.logger.error "OpenAI failed after #{max_retries} retries: #{e.message}"
+        []
+      end
     end
   end
 
