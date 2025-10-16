@@ -120,10 +120,10 @@ class GeminiOcrService
     max_retries = 5
 
     begin
-      Rails.logger.info "Sending PDF to Gemini 1.5 Flash for extraction..."
+      Rails.logger.info "Sending PDF to Gemini 2.5 Flash for extraction..."
 
       response = HTTParty.post(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=#{ENV['GOOGLE_GEMINI_API_KEY']}",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=#{ENV['GOOGLE_GEMINI_API_KEY']}",
         headers: { "Content-Type" => "application/json" },
         body: {
           contents: [
