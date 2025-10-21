@@ -4,29 +4,19 @@ class Document < ApplicationRecord
   has_one_attached :file
 
   STATUSES = %w[pending processing completed failed].freeze
+  VALID_BUYERS = %w[levis pvh_tommy].freeze
 
   validates :name, presence: true
   validates :status, inclusion: { in: STATUSES }
+  validates :buyer, inclusion: { in: VALID_BUYERS }, allow_nil: true
 
   scope :completed, -> { where(status: "completed") }
   scope :failed, -> { where(status: "failed") }
   scope :processing, -> { where(status: "processing") }
   scope :pending, -> { where(status: "pending") }
 
-  def pending?
-    status == "pending"
-  end
-
-  def processing?
-    status == "processing"
-  end
-
   def completed?
     status == "completed"
-  end
-
-  def failed?
-    status == "failed"
   end
 
   def file_size
@@ -39,6 +29,17 @@ class Document < ApplicationRecord
 
   def content_type
     file.attached? ? file.content_type : nil
+  end
+
+  def buyer_display_name
+    case buyer
+    when "levis"
+      "Levi Strauss"
+    when "pvh_tommy"
+      "PVH Tommy Hilfiger"
+    else
+      "Unknown"
+    end
   end
 
   def mark_as_processing!
@@ -80,27 +81,6 @@ class Document < ApplicationRecord
   def excel_data
     return [] unless extracted_data&.dig("excel_data")
     extracted_data["excel_data"]
-  end
-
-  def raw_ocr_text
-    return "" unless extracted_data&.dig("raw_text")
-    extracted_data["raw_text"]
-  end
-
-  def parsed_purchase_orders
-    return [] unless extracted_data&.dig("parsed_pos")
-    extracted_data["parsed_pos"]
-  end
-
-  def processing_summary
-    return {} unless extracted_data
-
-    {
-      total_pos: total_pos_count,
-      total_line_items: total_line_items_count,
-      processed_at: processed_at,
-      has_data: excel_data.any?
-    }
   end
 
   def self.export_all_summary

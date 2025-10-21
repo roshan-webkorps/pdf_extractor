@@ -64,19 +64,26 @@ class PdfSplittingService
       text = page.text
 
       # Look for both PO number patterns:
-      # 1. "PO NUMBER 1000606063"
-      # 2. "Purchase Order# 2500043993"
+      # 1. "PO NUMBER 1000606063" or "PO NUMBER T530038084"
+      # 2. "Purchase Order# 2500043993" or "Purchase Order# T530038084"
+      # 3. "PO Number: 4500622115" or "PO Number: T530038084"
       po_number = nil
 
-      # Try pattern 1: PO NUMBER followed by digits
-      po_number_match = text.match(/PO NUMBER\s+(\d+)/i)
+      # Try pattern 1: PO NUMBER followed by value (numeric or alphanumeric)
+      po_number_match = text.match(/PO NUMBER\s+([A-Z]?\d+)/i)
       if po_number_match
         po_number = po_number_match[1]
       else
-        # Try pattern 2: Purchase Order# followed by digits
-        purchase_order_match = text.match(/Purchase Order#?\s*(\d+)/i)
+        # Try pattern 2: Purchase Order# followed by value (numeric or alphanumeric)
+        purchase_order_match = text.match(/Purchase Order#?\s*([A-Z]?\d+)/i)
         if purchase_order_match
           po_number = purchase_order_match[1]
+        else
+          # Try pattern 3: PO Number: followed by value (numeric or alphanumeric)
+          po_number_colon_match = text.match(/PO Number:\s*([A-Z]?\d+)/i)
+          if po_number_colon_match
+            po_number = po_number_colon_match[1]
+          end
         end
       end
 

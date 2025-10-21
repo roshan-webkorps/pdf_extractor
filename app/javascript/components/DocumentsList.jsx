@@ -49,6 +49,7 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
         <thead>
           <tr>
             <th>Document</th>
+            <th>Buyer</th>
             <th>Status</th>
             <th>Size</th>
             <th>Uploaded</th>
@@ -63,6 +64,18 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
                   <div className="document-name">{document.name}</div>
                   <div className="document-filename">{document.original_filename}</div>
                 </div>
+              </td>
+              <td>
+                {document.buyer_display_name ? (
+                  <div className="buyer-cell">
+                    <span className="buyer-name">{document.buyer_display_name}</span>
+                    {document.buyer_detection === 'auto' && (
+                      <span className="auto-badge" title="Automatically detected"></span>
+                    )}
+                  </div>
+                ) : (
+                  <span className="text-muted">-</span>
+                )}
               </td>
               <td>
                 <StatusBadge status={document.status} />

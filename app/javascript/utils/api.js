@@ -74,7 +74,7 @@ export const authAPI = {
 };
 
 export const documentsAPI = {
-  getAll: () => apiRequest('/documents.json'),
+  getAll: (page = 1) => apiRequest(`/documents.json?page=${page}`),
   
   get: (id) => apiRequest(`/documents/${id}.json`),
   

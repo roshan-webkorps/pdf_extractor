@@ -1,3 +1,4 @@
+// app/javascript/pages/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import DocumentsList from '../components/DocumentsList';
 import FileUpload from '../components/FileUpload';
@@ -6,6 +7,14 @@ import { navigateToDocument } from '../utils/navigation';
 
 const HomePage = () => {
   const [documents, setDocuments] = useState([]);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    per_page: 10,
+    total_documents: 0,
+    total_pages: 1,
+    has_previous: false,
+    has_next: false
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -15,21 +24,24 @@ const HomePage = () => {
     const hasProcessingDocs = documents.some(doc => doc.status === 'processing' || doc.status === 'pending');
     
     if (hasProcessingDocs) {
-      const interval = setInterval(loadDocuments, 5000);
+      const interval = setInterval(() => loadDocuments(pagination.current_page), 5000);
       return () => clearInterval(interval);
     }
-  }, [documents]);
+  }, [documents, pagination.current_page]);
 
   useEffect(() => {
-    loadDocuments();
+    loadDocuments(1);
   }, []);
 
-  const loadDocuments = async () => {
+  const loadDocuments = async (page = 1) => {
     try {
-      const response = await documentsAPI.getAll();
+      const response = await documentsAPI.getAll(page);
       
       if (response.documents) {
         setDocuments(response.documents);
+        if (response.pagination) {
+          setPagination(response.pagination);
+        }
       } else if (Array.isArray(response)) {
         setDocuments(response);
       } else {
@@ -49,7 +61,7 @@ const HomePage = () => {
       await documentsAPI.upload(files);
       showMessage('success', `Successfully uploaded ${files.length} file${files.length !== 1 ? 's' : ''}. Processing started.`);
       setShowUploadModal(false);
-      await loadDocuments();
+      await loadDocuments(pagination.current_page);
     } catch (error) {
       console.error('Upload failed:', error);
       showMessage('error', 'Upload failed. Please try again.');
@@ -66,7 +78,7 @@ const HomePage = () => {
     try {
       await documentsAPI.update(documentId, data);
       showMessage('success', 'Document renamed successfully');
-      await loadDocuments();
+      await loadDocuments(pagination.current_page);
     } catch (error) {
       console.error('Rename failed:', error);
       showMessage('error', 'Failed to rename document');
@@ -77,7 +89,12 @@ const HomePage = () => {
     try {
       await documentsAPI.delete(documentId);
       showMessage('success', 'Document deleted successfully');
-      await loadDocuments();
+      
+      if (documents.length === 1 && pagination.current_page > 1) {
+        await loadDocuments(pagination.current_page - 1);
+      } else {
+        await loadDocuments(pagination.current_page);
+      }
     } catch (error) {
       console.error('Delete failed:', error);
       showMessage('error', 'Failed to delete document');
@@ -107,6 +124,11 @@ const HomePage = () => {
       console.error('Export all failed:', error);
       showMessage('error', 'Export failed. Please try again.');
     }
+  };
+
+  const handlePageChange = (newPage) => {
+    loadDocuments(newPage);
+    window.scrollTo(0, 0);
   };
 
   const showMessage = (type, text) => {
@@ -168,6 +190,40 @@ const HomePage = () => {
           onExport={handleExportDocument}
         />
       </div>
+
+      {/* Pagination */}
+      {pagination.total_pages > 1 && (
+        <div className="pagination">
+          <button
+            onClick={() => handlePageChange(pagination.current_page - 1)}
+            disabled={!pagination.has_previous}
+            className="pagination-btn"
+          >
+            Previous
+          </button>
+          
+          {/* Page Numbers */}
+          <div className="pagination-pages">
+            {Array.from({ length: pagination.total_pages }, (_, i) => i + 1).map((pageNum) => (
+              <button
+                key={pageNum}
+                onClick={() => handlePageChange(pageNum)}
+                className={`pagination-page ${pageNum === pagination.current_page ? 'active' : ''}`}
+              >
+                {pageNum}
+              </button>
+            ))}
+          </div>
+          
+          <button
+            onClick={() => handlePageChange(pagination.current_page + 1)}
+            disabled={!pagination.has_next}
+            className="pagination-btn"
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Upload Modal */}
       {showUploadModal && (

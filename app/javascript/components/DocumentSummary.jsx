@@ -37,6 +37,15 @@ const DocumentSummary = ({ document }) => {
       </div>
 
       <div className="summary-grid">
+        {document.buyer_display_name && (
+          <div className="summary-item">
+            <label>Buyer</label>
+            <value>
+              {document.buyer_display_name}
+            </value>
+          </div>
+        )}
+        
         <div className="summary-item">
           <label>File Size</label>
           <value>{formatFileSize(document.file_size)}</value>

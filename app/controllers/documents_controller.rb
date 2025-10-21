@@ -2,11 +2,32 @@ class DocumentsController < ApplicationController
   before_action :set_document, only: [ :show, :update, :destroy, :download_original, :export ]
 
   def index
-    @documents = Document.order(created_at: :desc)
+    page = params[:page].to_i
+    page = 1 if page < 1
+    per_page = 10
+
+    offset = (page - 1) * per_page
+
+    @documents = Document.order(created_at: :desc).limit(per_page).offset(offset)
+    total_documents = Document.count
+    total_pages = (total_documents.to_f / per_page).ceil
 
     respond_to do |format|
       format.html
-      format.json { render json: documents_json }
+      format.json {
+        render json: {
+          documents: documents_json,
+          pagination: {
+            current_page: page,
+            per_page: per_page,
+            total_documents: total_documents,
+            total_pages: total_pages,
+            has_previous: page > 1,
+            has_next: page < total_pages
+          },
+          export_all_summary: Document.export_all_summary
+        }
+      }
     end
   end
 
@@ -148,6 +169,9 @@ class DocumentsController < ApplicationController
       id: document.id,
       name: document.name,
       status: document.status,
+      buyer: document.buyer,
+      buyer_display_name: document.buyer_display_name,
+      buyer_detection: document.buyer_detection,
       file_size: document.file_size,
       original_filename: document.original_filename,
       content_type: document.content_type,
@@ -165,14 +189,5 @@ class DocumentsController < ApplicationController
     end
 
     base_data
-  end
-
-  def documents_json
-    documents_data = @documents.map { |doc| document_json(doc) }
-
-    {
-      documents: documents_data,
-      export_all_summary: Document.export_all_summary
-    }
   end
 end
