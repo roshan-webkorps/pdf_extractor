@@ -1444,3 +1444,36 @@ body {
     margin-top: 0.5rem;
   }
 }
+
+.data-table {
+  white-space: nowrap;
+}
+
+.data-table th,
+.data-table td {
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.data-table .cell-content {
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+  min-width: max-content;
+}
+
+.data-table .number-column {
+  width: 60px;
+  text-align: center;
+  font-weight: 500;
+  background-color: #f8f9fa;
+  position: sticky;
+  left: 0;
+  z-index: 10;
+}
+
+.table-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 70vh;
+}

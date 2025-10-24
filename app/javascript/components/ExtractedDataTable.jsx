@@ -19,8 +19,9 @@ const ExtractedDataTable = ({ data, documentName }) => {
   const startIndex = (currentPage - 1) * itemsPerPage
   const paginatedData = data.slice(startIndex, startIndex + itemsPerPage)
 
-  // All 39 columns in the correct order
+  // All 47 columns in the correct order (with # column at the start)
   const allColumns = [
+    { key: '#', label: '#', isNumber: true },
     { key: 'factory', label: 'Factory' },
     { key: 'ship_under_po_ref', label: 'Ship Under PO Ref' },
     { key: 'article', label: 'Article' },
@@ -78,8 +79,6 @@ const ExtractedDataTable = ({ data, documentName }) => {
           <h3>Extracted Data</h3>
           <p>{data.length} line items</p>
         </div>
-        
-        {/* Remove search controls */}
       </div>
 
       <div className="table-container">
@@ -87,7 +86,7 @@ const ExtractedDataTable = ({ data, documentName }) => {
           <thead>
             <tr>
               {allColumns.map(column => (
-                <th key={column.key}>
+                <th key={column.key} className={column.isNumber ? 'number-column' : ''}>
                   {column.label}
                 </th>
               ))}
@@ -97,10 +96,16 @@ const ExtractedDataTable = ({ data, documentName }) => {
             {paginatedData.map((row, index) => (
               <tr key={startIndex + index}>
                 {allColumns.map(column => (
-                  <td key={column.key}>
-                    <div className="cell-content">
-                      {row[column.key] || '-'}
-                    </div>
+                  <td key={column.key} className={column.isNumber ? 'number-column' : ''}>
+                    {column.isNumber ? (
+                      <div className="cell-content">
+                        {startIndex + index + 1}
+                      </div>
+                    ) : (
+                      <div className="cell-content" title={row[column.key] || '-'}>
+                        {row[column.key] || '-'}
+                      </div>
+                    )}
                   </td>
                 ))}
               </tr>
