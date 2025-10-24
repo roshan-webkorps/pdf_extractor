@@ -31,8 +31,8 @@ module Buyers
           **Line Item Fields (per size/quantity row):**
           - "size": Extract from "Size/Dim" column header (XS, S, M, L, XL, XXL, etc.)
           - "quantity": Extract quantity value for each size from the "Qty" row in size breakdown table
-          - "cost": Extract quantity value for each size from the "Cost" row in size breakdown table
-          - "total_units": Extract quantity value from the "T o t a l Units" row in size breakdown table
+          - "cost": Extract cost value for each size from the "Cost" row in size breakdown table
+          - "total_units": Extract the total units value that appears at the BOTTOM of the SPECIFIC size breakdown table that this line item belongs to. Look for "T o t a l Units [NUMBER]" or "Total Units [NUMBER]" at the bottom of each table. If a PO has multiple tables (for different colors/styles), each table has its own total - use the correct total for each group. Extract only the numeric value and remove commas.
 
           **IMPORTANT FOR DATE EXTRACTION:**
           - PO Issue Date dates come in format YYYY/MM/DD or YYYYMMDD
@@ -42,6 +42,13 @@ module Buyers
           - PO has a size breakdown table with columns: XS, S, M, L, XL, XXL, etc.
           - Each column with a quantity should be a separate line item
           - Extract the exact size from the column header
+
+          **IMPORTANT FOR TOTAL UNITS:**
+          - If a PO has a SINGLE size breakdown table: all line items get the same total_units value from that table
+          - If a PO has MULTIPLE size breakdown tables (different Line#, different colors, etc.): each group of line items gets the total_units from ITS OWN table
+          - Example: Table 1 (Color A) has sizes XS,S,M,L with "Total 657 Units" → all Color A line items get "657"
+          - Example: Table 2 (Color B) has sizes XS,S,M,L with "Total 980 Units" → all Color B line items get "980"
+          - DO NOT sum all tables together - use the specific table's total for its line items
 
           **EXAMPLE OUTPUT FORMAT:**
           [
@@ -61,24 +68,36 @@ module Buyers
                   "base_material_code": "MW42860",
                   "description": "FLEX POPLIN STP SS SHIRT",
                   "size": "XS",
-                  "quantity": "3",
-                  "item_total": "29.25"
+                  "quantity": "11",
+                  "item_total": "114.40",
+                  "total_units": "907"
                 },
                 {
                   "variant_material_code": "MW0MW42860",
                   "base_material_code": "MW42860",
                   "description": "FLEX POPLIN STP SS SHIRT",
                   "size": "S",
-                  "quantity": "14",
-                  "item_total": "136.50"
+                  "quantity": "32",
+                  "item_total": "332.80",
+                  "total_units": "407"
                 },
                 {
                   "variant_material_code": "MW0MW42860",
                   "base_material_code": "MW42860",
-                  "description": "FLEX POPLIN STP SS SHIRT",
-                  "size": "M",
-                  "quantity": "35",
-                  "item_total": "341.25"
+                  "description": "FLEX POPLIN STP SS SHIRT - Color B",
+                  "size": "XS",
+                  "quantity": "7",
+                  "item_total": "72.80",
+                  "total_units": "420"
+                },
+                {
+                  "variant_material_code": "MW0MW42860",
+                  "base_material_code": "MW42860",
+                  "description": "FLEX POPLIN STP SS SHIRT - Color B",
+                  "size": "S",
+                  "quantity": "23",
+                  "item_total": "239.20",
+                  "total_units": "320"
                 }
               ]
             }
@@ -99,6 +118,7 @@ module Buyers
           - One object per PO, with line_items array
           - Extract ALL line items with their actual sizes and quantities
           - Each size in the breakdown table should be a separate line item
+          - Remember: If multiple tables exist in a PO, each table group has its own "total_units" value
         INSTRUCTIONS
       end
     end
