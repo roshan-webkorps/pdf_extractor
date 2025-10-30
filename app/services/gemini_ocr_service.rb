@@ -57,8 +57,10 @@ class GeminiOcrService
             }
           ],
           generationConfig: {
-            temperature: 0.1,
-            maxOutputTokens: 16384
+            temperature: 0.0,
+            maxOutputTokens: 16384,
+            topP: 1.0,
+            topK: 1
           }
         }.to_json
       )
