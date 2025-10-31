@@ -41,7 +41,7 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 gem "rtesseract", "~> 3.1"
-gem "mini_magick", "~> 4.11"
+gem "mini_magick", "~> 5.3"
 gem "pdf-reader", "~> 2.11"
 
 gem "axlsx"
