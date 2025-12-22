@@ -4,7 +4,7 @@ class Document < ApplicationRecord
   has_one_attached :file
 
   STATUSES = %w[pending processing completed failed].freeze
-  VALID_BUYERS = %w[levis pvh_tommy].freeze
+  VALID_BUYERS = %w[levis pvh_tommy asos].freeze
 
   validates :name, presence: true
   validates :status, inclusion: { in: STATUSES }
@@ -37,6 +37,8 @@ class Document < ApplicationRecord
       "Levi Strauss"
     when "pvh_tommy"
       "PVH Tommy Hilfiger"
+    when "asos"
+      "ASOS"
     else
       "Unknown"
     end

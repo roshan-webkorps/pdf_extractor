@@ -15,7 +15,7 @@ class DocumentProcessingService
       detected_buyer = BuyerDetectionService.new(temp_file.path).detect
 
       if detected_buyer.nil?
-        raise "Unable to detect buyer type. Please ensure the document is a valid Levi Strauss or PVH Tommy Hilfiger purchase order."
+        raise "Unable to detect buyer type. Please ensure the document is a valid purchase order."
       end
 
       # Update document with detected buyer

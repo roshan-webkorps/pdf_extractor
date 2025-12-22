@@ -7,6 +7,9 @@ class BuyerDetectionService
     "pvh_tommy" => [
       /PVH/i,
       /TOMMY\s+HILFIGER/i
+    ],
+    "asos" => [
+      /asos/i
     ]
   }.freeze
 
