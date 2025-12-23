@@ -74,7 +74,11 @@ export const authAPI = {
 };
 
 export const documentsAPI = {
-  getAll: (page = 1) => apiRequest(`/documents.json?page=${page}`),
+  getAll: (page = 1, queryParams = '') => {
+    const baseUrl = `/documents.json?page=${page}`;
+    const url = queryParams ? `${baseUrl}&${queryParams}` : baseUrl;
+    return apiRequest(url);
+  },
   
   get: (id) => apiRequest(`/documents/${id}.json`),
   
@@ -103,6 +107,18 @@ export const documentsAPI = {
   delete: (id) => apiRequest(`/documents/${id}`, {
     method: 'DELETE',
   }),
+
+  retry: (id) => apiRequest(`/documents/${id}/retry`, {
+    method: 'POST',
+  }),
+
+  exportSelected: async (documentIds) => {
+    const blob = await apiRequest('/documents/export_selected', {
+      method: 'POST',
+      body: JSON.stringify({ document_ids: documentIds }),
+    });
+    return blob;
+  },
   
   downloadOriginal: (id) => {
     window.location.href = `/documents/${id}/download_original`;

@@ -1,7 +1,7 @@
 import React from 'react';
 import StatusBadge from './StatusBadge';
 
-const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
+const DocumentsList = ({ documents, onView, onRename, onDelete, onExport, onRetry, selectedDocuments, onSelectDocument, onSelectAll }) => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -21,16 +21,11 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
   };
 
   const handleRename = (document) => {
-    const newName = prompt('Enter new name:', document.name);
-    if (newName && newName.trim() && newName !== document.name) {
-      onRename(document.id, { name: newName.trim() });
-    }
+    onRename(document);
   };
 
   const handleDelete = (document) => {
-    if (confirm(`Are you sure you want to delete "${document.name}"?`)) {
-      onDelete(document.id);
-    }
+    onDelete(document);
   };
 
   if (documents.length === 0) {
@@ -48,6 +43,17 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
       <table className="documents-table">
         <thead>
           <tr>
+            <th className="checkbox-column">
+              <input
+                type="checkbox"
+                checked={
+                  documents.filter(d => d.status === 'completed' && d.total_line_items > 0).length > 0 &&
+                  selectedDocuments.length === documents.filter(d => d.status === 'completed' && d.total_line_items > 0).length
+                }
+                onChange={onSelectAll}
+                className="document-checkbox"
+              />
+            </th>
             <th>Document</th>
             <th>Buyer</th>
             <th>Status</th>
@@ -58,10 +64,26 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
         </thead>
         <tbody>
           {documents.map((document) => (
-            <tr key={document.id}>
+            <tr key={document.id} className={selectedDocuments.includes(document.id) ? 'row-selected' : ''}>
+              <td className="checkbox-column">
+                {document.status === 'completed' && document.total_line_items > 0 ? (
+                  <input
+                    type="checkbox"
+                    checked={selectedDocuments.includes(document.id)}
+                    onChange={() => onSelectDocument(document.id)}
+                    className="document-checkbox"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                ) : null}
+              </td>
               <td>
                 <div className="document-info">
-                  <div className="document-name">{document.name}</div>
+                  <div 
+                    className="document-name document-name-link" 
+                    onClick={() => onView(document.id)}
+                  >
+                    {document.name}
+                  </div>
                   <div className="document-filename">{document.original_filename}</div>
                 </div>
               </td>
@@ -81,7 +103,6 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
                 <StatusBadge status={document.status} />
                 {document.error_message && (
                   <div className="error-message" title={document.error_message}>
-                    ⚠️ Error
                   </div>
                 )}
               </td>
@@ -107,6 +128,14 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport }) => {
                       onClick={() => onExport(document.id)}
                     >
                       Export
+                    </button>
+                  )}
+                  {document.status === 'failed' && (
+                    <button
+                      className="btn btn-small btn-warning"
+                      onClick={() => onRetry(document.id)}
+                    >
+                      Retry
                     </button>
                   )}
                   <button

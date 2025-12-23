@@ -1,16 +1,37 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: [ :show, :update, :destroy, :download_original, :export ]
+  before_action :set_document, only: [ :show, :update, :destroy, :download_original, :export, :retry ]
 
   def index
     page = params[:page].to_i
     page = 1 if page < 1
     per_page = 10
 
-    offset = (page - 1) * per_page
+    # Start with all documents
+    documents = Document.all
 
-    @documents = Document.order(created_at: :desc).limit(per_page).offset(offset)
-    total_documents = Document.count
+    # Apply status filter
+    if params[:status].present?
+      documents = documents.where(status: params[:status])
+    end
+
+    # Apply buyer filter
+    if params[:buyer].present?
+      documents = documents.where(buyer: params[:buyer])
+    end
+
+    # Apply search filter (search in name and original_filename)
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      documents = documents.where("name ILIKE ?", search_term)
+    end
+
+    # Order and paginate
+    documents = documents.order(created_at: :desc)
+    total_documents = documents.count
     total_pages = (total_documents.to_f / per_page).ceil
+
+    offset = (page - 1) * per_page
+    @documents = documents.limit(per_page).offset(offset)
 
     respond_to do |format|
       format.html
@@ -73,6 +94,46 @@ class DocumentsController < ApplicationController
     @document.destroy
 
     render json: { message: "Document deleted successfully" }
+  end
+
+  def retry
+    @document.update(status: :pending, error_message: nil)
+    DocumentProcessingJob.perform_later(@document.id)
+
+    render json: {
+      message: "Document queued for reprocessing",
+      document: document_json(@document)
+    }
+  end
+
+  def export_selected
+    document_ids = params[:document_ids] || []
+
+    if document_ids.empty?
+      return render json: { error: "No documents selected" }, status: :unprocessable_entity
+    end
+
+    documents = Document.where(id: document_ids, status: :completed)
+    documents_with_data = documents.select { |doc| doc.excel_data.present? }
+
+    if documents_with_data.empty?
+      return render json: { error: "No exportable data in selected documents" }, status: :unprocessable_entity
+    end
+
+    begin
+      excel_service = ExcelExportService.new(documents_with_data)
+      package = excel_service.generate
+
+      filename = "selected_documents_export_#{Time.current.strftime('%Y%m%d_%H%M%S')}_#{documents_with_data.count}_docs.xlsx"
+
+      send_data package.to_stream.read,
+                type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                filename: filename,
+                disposition: "attachment"
+
+    rescue => e
+      handle_export_error(e, "Export selected documents")
+    end
   end
 
   def download_original

@@ -9,11 +9,13 @@ Rails.application.routes.draw do
     member do
       get :download_original
       get :export
+      post :retry
     end
 
     collection do
       get :export_all
       get :export_all_summary
+      post :export_selected
     end
   end
 

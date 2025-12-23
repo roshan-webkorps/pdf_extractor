@@ -102,8 +102,12 @@ const ExtractedDataTable = ({ data, documentName }) => {
                         {startIndex + index + 1}
                       </div>
                     ) : (
-                      <div className="cell-content" title={row[column.key] || '-'}>
-                        {row[column.key] || '-'}
+                      <div className="cell-content" title={row[column.key] || '—'}>
+                        {row[column.key] ? (
+                          row[column.key]
+                        ) : (
+                          <span className="empty-cell">—</span>
+                        )}
                       </div>
                     )}
                   </td>
