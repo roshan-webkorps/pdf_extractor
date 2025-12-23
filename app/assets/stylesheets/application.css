@@ -46,8 +46,9 @@ body {
 }
 
 .app-logo {
-  height: 40px;
+  height: 48px;
   width: auto;
+  display: block;
 }
 
 .header-right {
@@ -106,9 +107,9 @@ body {
 }
 
 .page-hero h1 {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #111827;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #374151;
   margin: 0;
   letter-spacing: -0.025em;
 }
@@ -1094,7 +1095,7 @@ body {
 }
 
 .data-table tbody tr:hover {
-  background: #f0f9ff;
+  background: #f5f5f5;
 }
 
 .data-table tbody tr:last-child td {
@@ -1118,7 +1119,7 @@ body {
 }
 
 .data-table tbody tr:hover .number-column {
-  background-color: #dbeafe !important;
+  background-color: #e5e5e5 !important;
 }
 
 .cell-content {

@@ -259,7 +259,7 @@ const HomePage = () => {
       {/* Hero Section */}
       <div className="page-hero">
         <div className="page-hero-content">
-          <h1>OCR Document Processor</h1>
+          <h1>Purchase Orders</h1>
           <div className="hero-actions">
             <button 
               className="btn btn-primary"
