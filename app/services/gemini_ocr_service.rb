@@ -37,11 +37,12 @@ class GeminiOcrService
     max_retries = 5
 
     begin
-      Rails.logger.info "Sending PDF to Gemini 2.5 Flash for extraction (buyer: #{@buyer})..."
+      Rails.logger.info "Sending PDF to Gemini 3 Flash for extraction (buyer: #{@buyer})..."
 
       response = HTTParty.post(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=#{ENV['GOOGLE_GEMINI_API_KEY']}",
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=#{ENV['GOOGLE_GEMINI_API_KEY']}",
         headers: { "Content-Type" => "application/json" },
+        timeout: 240,
         body: {
           contents: [
             {
@@ -58,9 +59,12 @@ class GeminiOcrService
           ],
           generationConfig: {
             temperature: 0.0,
-            maxOutputTokens: 16384,
+            maxOutputTokens: 32768,
             topP: 1.0,
-            topK: 1
+            topK: 1,
+            thinkingConfig: {
+              thinkingLevel: "minimal"
+            }
           }
         }.to_json
       )
@@ -69,7 +73,12 @@ class GeminiOcrService
         raw_response = JSON.parse(response.body).dig("candidates", 0, "content", "parts", 0, "text")
 
         if raw_response
-          json_str = raw_response[/```json\s*(.*?)\s*```/m, 1]&.strip || raw_response.strip
+          json_str = raw_response.strip
+
+          json_str = json_str.sub(/\A\s*```(?:json)?\s*\n?/, "")
+          json_str = json_str.sub(/\n?\s*```\s*\z/, "")
+          json_str = json_str.strip
+          Rails.logger.debug "Attempting to parse JSON (first 200 chars): #{json_str[0..200]}"
           parsed_data = JSON.parse(json_str)
           Rails.logger.info "Gemini successfully extracted #{parsed_data.length} POs (buyer: #{@buyer})"
           parsed_data

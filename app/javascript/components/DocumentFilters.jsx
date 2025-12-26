@@ -69,6 +69,7 @@ const DocumentFilters = ({ filters, onFilterChange }) => {
             <option value="">All Buyers</option>
             <option value="levis">Levi Strauss</option>
             <option value="pvh_tommy">PVH Tommy Hilfiger</option>
+            <option value="asos">ASOS</option>
           </select>
         </div>
 
