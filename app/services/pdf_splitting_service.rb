@@ -10,7 +10,8 @@ class PdfSplittingService
     /PO NUMBER\s+([A-Z]?\d+)/i,                    # e.g., "PO NUMBER 1000606063" or "PO NUMBER T530038084"
     /Purchase Order#?\s*([A-Z]?\d+)/i,             # e.g., "Purchase Order# 2500043993" or "Purchase Order 12345"
     /PO Number:\s*([A-Z]?\d+)/i,                   # e.g., "PO Number: 4500622115"
-    /PO-No\.\s+([A-Z]?\d+)/i                       # e.g., "PO-No. 123456" (common in Hugo Boss)
+    /PO-No\.\s+([A-Z]?\d+)/i,                      # e.g., "PO-No. 123456" (common in Hugo Boss)
+    /PO:\s*(\d+)/i                                 # e.g., "PO: 123456789"
   ].freeze
 
   def initialize(file_path)
