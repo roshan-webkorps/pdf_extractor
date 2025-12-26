@@ -10,6 +10,9 @@ class BuyerDetectionService
     ],
     "asos" => [
       /asos/i
+    ],
+    "kontoor" => [
+      /kontoor/i
     ]
   }.freeze
 
