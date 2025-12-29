@@ -42,7 +42,7 @@ gem "image_processing", "~> 1.2"
 
 gem "rtesseract", "~> 3.1"
 gem "mini_magick", "~> 4.11"
-gem "pdf-reader", "~> 2.11"
+gem "pdf-reader", "~> 2.15"
 
 gem "axlsx"
 gem "axlsx_rails"
