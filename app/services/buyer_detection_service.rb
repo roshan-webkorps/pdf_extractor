@@ -13,6 +13,9 @@ class BuyerDetectionService
     ],
     "kontoor" => [
       /kontoor/i
+    ],
+    "bestseller" => [
+      /Bestseller/i
     ]
   }.freeze
 
