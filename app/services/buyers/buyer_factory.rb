@@ -6,6 +6,7 @@ module Buyers
       when "pvh_tommy" then PvhTommy::Prompt.build
       when "asos" then Asos::Prompt.build
       when "kontoor" then Kontoor::Prompt.build
+      when "bestseller" then Bestseller::Prompt.build
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
@@ -16,6 +17,7 @@ module Buyers
       when "pvh_tommy" then PvhTommy::Mapper
       when "asos" then Asos::Mapper
       when "kontoor" then Kontoor::Mapper
+      when "bestseller" then Bestseller::Mapper
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
