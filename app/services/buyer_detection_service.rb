@@ -15,7 +15,10 @@ class BuyerDetectionService
       /kontoor/i
     ],
     "bestseller" => [
-      /Bestseller/i
+      /(?=.*Bestseller)(?=.*Order\s+no)/im
+    ],
+    "bestseller_domestic" => [
+      /(?=.*Bestseller)(?=.*PO\s+number)/im
     ]
   }.freeze
 

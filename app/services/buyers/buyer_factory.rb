@@ -7,6 +7,7 @@ module Buyers
       when "asos" then Asos::Prompt.build
       when "kontoor" then Kontoor::Prompt.build
       when "bestseller" then Bestseller::Prompt.build
+      when "bestseller_domestic" then BestsellerDomestic::Prompt.build
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
@@ -18,6 +19,7 @@ module Buyers
       when "asos" then Asos::Mapper
       when "kontoor" then Kontoor::Mapper
       when "bestseller" then Bestseller::Mapper
+      when "bestseller_domestic" then BestsellerDomestic::Mapper
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
