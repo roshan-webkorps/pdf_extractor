@@ -8,6 +8,7 @@ module Buyers
       when "kontoor" then Kontoor::Prompt.build
       when "bestseller" then Bestseller::Prompt.build
       when "bestseller_domestic" then BestsellerDomestic::Prompt.build
+      when "barbour" then Barbour::Prompt.build
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
@@ -20,6 +21,7 @@ module Buyers
       when "kontoor" then Kontoor::Mapper
       when "bestseller" then Bestseller::Mapper
       when "bestseller_domestic" then BestsellerDomestic::Mapper
+      when "barbour" then Barbour::Mapper
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
