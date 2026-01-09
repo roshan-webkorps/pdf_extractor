@@ -19,6 +19,9 @@ class BuyerDetectionService
     ],
     "bestseller_domestic" => [
       /(?=.*Bestseller)(?=.*PO\s+number)/im
+    ],
+    "barbour" => [
+      /barbour/i
     ]
   }.freeze
 
@@ -60,11 +63,13 @@ class BuyerDetectionService
       return ""
     end
 
-    text = pages_to_scan.map(&:text).join("\n")
+    text = pages_to_scan.map(&:text).join("\n").squeeze(" ").strip
 
-    Rails.logger.debug "Extracted #{text.length} characters from first #{pages_to_scan.length} pages"
+    truncated_text = text[0, 5000]
 
-    text
+    Rails.logger.debug "Extracted #{truncated_text.length} characters from first #{pages_to_scan.length} pages "
+
+    truncated_text
   rescue => e
     Rails.logger.error "Failed to extract text for buyer detection: #{e.message}"
     ""
