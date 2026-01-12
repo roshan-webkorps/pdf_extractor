@@ -22,6 +22,9 @@ class BuyerDetectionService
     ],
     "barbour" => [
       /barbour/i
+    ],
+    "ll_bean" => [
+      /ll\s*bean/i
     ]
   }.freeze
 
