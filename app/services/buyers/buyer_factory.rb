@@ -9,6 +9,7 @@ module Buyers
       when "bestseller" then Bestseller::Prompt.build
       when "bestseller_domestic" then BestsellerDomestic::Prompt.build
       when "barbour" then Barbour::Prompt.build
+      when "ll_bean" then LlBean::Prompt.build
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
@@ -22,6 +23,7 @@ module Buyers
       when "bestseller" then Bestseller::Mapper
       when "bestseller_domestic" then BestsellerDomestic::Mapper
       when "barbour" then Barbour::Mapper
+      when "ll_bean" then LlBean::Mapper
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
