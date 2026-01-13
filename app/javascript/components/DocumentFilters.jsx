@@ -75,6 +75,8 @@ const DocumentFilters = ({ filters, onFilterChange }) => {
             <option value="bestseller_domestic">Bestseller Domestic</option>
             <option value="barbour">Barbour</option>
             <option value="ll_bean">L.L.Bean</option>
+            <option value="superdry_uk">Superdry UK</option>
+            <option value="superdry_australia">Superdry Australia</option>
           </select>
         </div>
 
