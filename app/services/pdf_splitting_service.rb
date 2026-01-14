@@ -14,6 +14,7 @@ class PdfSplittingService
     /PO:\s*(\d+)/i,                                # e.g., "PO: 123456789"
     /Order\s+no\.?\s*([A-Z0-9]+)/i,                # e.g., "Order no. AQUMHA4460494"
     /PO\s*#\s*([A-Z]?\d+)/i,                       # e.g., "PO # 45580095"
+    /PO\s+No:\s*([A-Z]?\d+)/i,                     # e.g., "PO No: 1114236"
     /Purchase Order No#?\s*([A-Z]?\d+)/i           # e.g., "Purchase Order No# 570394" or "Purchase Order No 12345"
   ].freeze
 

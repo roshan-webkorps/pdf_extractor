@@ -1,4 +1,3 @@
-
 module Buyers
   module SuperdryAustralia
     class Mapper

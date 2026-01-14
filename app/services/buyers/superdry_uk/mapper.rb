@@ -1,4 +1,3 @@
-
 module Buyers
   module SuperdryUk
     class Mapper
