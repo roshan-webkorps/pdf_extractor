@@ -10,6 +10,8 @@ module Buyers
       when "bestseller_domestic" then BestsellerDomestic::Prompt.build
       when "barbour" then Barbour::Prompt.build
       when "ll_bean" then LlBean::Prompt.build
+      when "superdry_uk" then SuperdryUk::Prompt.build
+      when "superdry_australia" then SuperdryAustralia::Prompt.build
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end
@@ -24,6 +26,8 @@ module Buyers
       when "bestseller_domestic" then BestsellerDomestic::Mapper
       when "barbour" then Barbour::Mapper
       when "ll_bean" then LlBean::Mapper
+      when "superdry_uk" then SuperdryUk::Mapper
+      when "superdry_australia" then SuperdryAustralia::Mapper
       else raise ArgumentError, "Unknown buyer: #{buyer}"
       end
     end

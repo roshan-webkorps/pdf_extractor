@@ -25,6 +25,12 @@ class BuyerDetectionService
     ],
     "ll_bean" => [
       /ll\s*bean/i
+    ],
+    "superdry_uk" => [
+      /dkh\s*retail/i
+    ],
+    "superdry_australia" => [
+      /brandcollective/i
     ]
   }.freeze
 
