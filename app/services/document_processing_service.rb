@@ -13,13 +13,14 @@ class DocumentProcessingService
 
       # STEP 1: Detect buyer FIRST
       detected_buyer = BuyerDetectionService.new(temp_file.path).detect
+      total_pages = count_total_pages
 
       if detected_buyer.nil?
         raise "Unable to detect buyer type. Please ensure the document is a valid purchase order."
       end
 
-      # Update document with detected buyer
-      @document.update!(buyer: detected_buyer, buyer_detection: "auto")
+      # Update document with detected buyer and page_count
+      @document.update!(buyer: detected_buyer, buyer_detection: "auto", page_count: total_pages)
       Rails.logger.info "Detected buyer: #{detected_buyer} for document #{@document.id}"
 
       # STEP 2: Check if PDF should be split
@@ -123,5 +124,16 @@ class DocumentProcessingService
 
     temp_file.rewind
     temp_file
+  end
+
+  def count_total_pages
+    page_count = nil
+
+    @document.file.open do |file|
+      reader = PDF::Reader.new(file)
+      page_count = reader.page_count
+    end
+
+    page_count
   end
 end

@@ -50,6 +50,11 @@ const DocumentSummary = ({ document }) => {
           <label>File Size</label>
           <value>{formatFileSize(document.file_size)}</value>
         </div>
+
+        <div className="summary-item">
+          <label>Total Pages</label>
+          <value className="page_count">{document.page_count}</value>
+        </div>
         
         <div className="summary-item">
           <label>Uploaded</label>

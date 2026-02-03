@@ -1473,3 +1473,7 @@ body {
   z-index: 1000;
   padding: 1rem;
 }
+
+.page-count{
+  padding: 1rem 2.5rem !important;
+}
