@@ -241,7 +241,8 @@ class DocumentsController < ApplicationController
       processed_at: document.processed_at,
       error_message: document.error_message,
       total_pos: document.total_pos_count,
-      total_line_items: document.total_line_items_count
+      total_line_items: document.total_line_items_count,
+      page_count: document.page_count
     }
 
     if document.completed?

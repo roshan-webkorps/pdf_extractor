@@ -58,6 +58,7 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport, onRetr
             <th>Buyer</th>
             <th>Status</th>
             <th>Size</th>
+            <th>Total Pages</th>
             <th>Uploaded</th>
             <th>Actions</th>
           </tr>
@@ -107,6 +108,7 @@ const DocumentsList = ({ documents, onView, onRename, onDelete, onExport, onRetr
                 )}
               </td>
               <td>{formatFileSize(document.file_size)}</td>
+              <td className="page_count">{document.page_count}</td>
               <td>{formatDate(document.created_at)}</td>
               <td>
                 <div className="action-buttons">
