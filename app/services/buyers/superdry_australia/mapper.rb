@@ -45,7 +45,7 @@ module Buyers
           "internal_lot_no" => "",
           "buyer_lot_no" => "",
           "delivery_ocid" => "",
-          "fulfillment_type" => "",
+          "fulfillment_type" => "Manufacture",
           "initial_pcd_date" => "",
           "first_buyer_delivery_date" => "",
           "packing_code" => "",

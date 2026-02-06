@@ -18,9 +18,9 @@ module Buyers
           - "po_number": Extract from "PO number:" field at the top of the document (e.g., "4500154132")
           - "communication_address": Extract from "Communication address:" field, If Communication address is "BEST UNITED INDIA COMFORTS PVT LTD." then return the value as "Bestseller India J&J" otherwise return Communication address from the first line (e.g., "BEST UNITED INDIA COMFORTS PVT LTD.")
           - "currency": Extract currency from "Currency:" field, it is at the second row's last value of a table table whose columns are in this manner: ARTICLE, Article description Customs code Fabric composition Construction type Gender Article group Country of origin, Price per unit, Total unit, Net Value, Currency (e.g., "INR")
-          - "po_date": Extract from "PO Date:" field at the top of the document (e.g., "11.04.2025").
-          - "goods_ready_date": Extract from "Goods ready date:" field (e.g., "20.01.2026")
-          - "oc_delivery_date": Extract from "Goods ready date:" field, subtract the date 21 days before (e.g., convert "20.01.2026" to "30.12.2025"), outputting only the converted date.
+          - "po_date": Extract from "PO Date:" field at the top of the document (e.g., "11-04-2025").
+          - "goods_ready_date": Extract from "Goods ready date:" field (e.g., "20-01-2026")
+          - "oc_delivery_date": Extract from "Goods ready date:" field, subtract the date 21 days before (e.g., convert "20.01.2026" to "30-12-2025"), outputting only the converted date.
           - "article_description": Extract from "Article Description:" field, it is at the second row's first value of a table whose columns are in this manner: ARTICLE, Article description Customs code Fabric composition Construction type Gender Article group Country of origin, Price per unit, Total unit, Net Value, Currency (e.g., "JJOR ITALY SHIRT SS")
           - "vcp_to_be": Extract from "VCP to be:" field (e.g., "760")
 

@@ -19,8 +19,8 @@ module Buyers
           - "delivery_address": Extract from "Delivery address:" field, return the last word of the delivery address which is country (e.g., "US")
           - "season_year": Extract from "Season Year:" field (e.g., "Spring 2026")
           - "item_id": Extract from "ITEM ID" field which is at the starting of the table, it is combination of id and description but you should return only id (e.g., "525893").
-          - "buyer_delivery_date": Extract from "Transfer date:" field, the date is in MM/DD/YYYY return the converted date in DD/MM/YYYY (e.g., "11/19/25" -> "19-11-25")
-          - "oc_delivery_date": Extract from "Transfer date:" field, the date is in MM/DD/YYYY return the converted date in DD/MM/YYYY and subtract 21 days (e.g., "11/19/25" -> "29-10-25")
+          - "buyer_delivery_date": Extract from "Transfer date:" field, the date is in MM/DD/YYYY return the converted date in DD-MM-YYYY (e.g., "11/19/25" -> "19-11-25")
+          - "oc_delivery_date": Extract from "Transfer date:" field, the date is in MM/DD/YYYY return the converted date in DD-MM-YYYY and subtract 21 days (e.g., "11/19/25" -> "29-10-25")
           - "item_id_description": Extract from "ITEM ID" field which is at the starting of the table, it is combination of id and description but you should return only description (e.g., "Snwshd Crdry Shrt LS SFF Pl M R").
 
           **Line Item Fields (per size/quantity row):**

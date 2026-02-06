@@ -19,11 +19,11 @@ module Buyers
           - "price_per_item_currency": Extract ONLY currency from "Price per item:" field is below Quantity / Price section (e.g., "EUR")
           - "price_per_item": Extract ONLY price from "Price per item:" field is below Quantity / Price section (e.g., "7.00")
           - "collection": Extract from "Collection:" field at the top of the document (e.g., "NOOS ( NOOS )")
-          - "1_print_date": Extract from "1 Print Date:" field, parse it as DD-MM-YYYY format, and return it formatted as DD.MM.YYYY (e.g., convert "September 24, 2025" to "24.09.2025"), outputting only the formatted date.
+          - "1_print_date": Extract from "1 Print Date:" field, parse it as DD-MM-YYYY format, and return it formatted as DD-MM-YYYY (e.g., convert "September 24, 2025" to "24-09-2025"), outputting only the formatted date.
           - "transportation": Extract from "Transportation:" field, field is under PAYMENT / TRANSPORTATION section (e.g., "BY SEA")
-          - "delivery_buyer_order_ref": Extract from "Cargo closing date (CCD):" field, field is under DATES section, parse it as DD-MM-YYYY format, subtract the date 21 days before, and return it formatted as DD.MM.YYYY (e.g., convert "2026-01-28" to "07.01.2026"), outputting only the formatted date.
+          - "delivery_buyer_order_ref": Extract from "Cargo closing date (CCD):" field, field is under DATES section, parse it as DD-MM-YYYY format, subtract the date 21 days before, and return it formatted as DD-MM-YYYY (e.g., convert "2026-01-28" to "07-01-2026"), outputting only the formatted date.
           - "buyer_delivery_date": Extract from "Cargo closing date (CCD):" field, field is under DATES section, parse it as DD-MM-YYYY format, and return it formatted as DD.MM.YYYY (e.g., convert "2026-01-28" to "28.01.2026"), outputting only the formatted date.
-          - "oc_delivery_date": Extract from "Cargo closing date (CCD):" field, field is under DATES section, parse it as DD-MM-YYYY format, subtract the date 21 days before, and return it formatted as DD.MM.YYYY (e.g., convert "2026-01-28" to "07.01.2026"), outputting only the formatted date.
+          - "oc_delivery_date": Extract from "Cargo closing date (CCD):" field, field is under DATES section, parse it as DD-MM-YYYY format, subtract the date 21 days before, and return it formatted as DD-MM-YYYY (e.g., convert "2026-01-28" to "07-01-2026"), outputting only the formatted date.
           - "destination": Extract from "Destination:" field at the top of the document (e.g., "DENMARK")
           - "market": Extract from "Destination:" field at the top of the document, find the continent of destination - Eg if Denmark then it becomes Europe (e.g., "DENMARK" -> "EUROPE")
           - "style_information_name": Extract from "Name:" field, field is under Style Information section, (e.g., "JPRBLUHARVEY OXFORD L/S SHIRT NOOS")

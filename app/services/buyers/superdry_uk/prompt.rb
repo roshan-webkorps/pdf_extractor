@@ -18,11 +18,11 @@ module Buyers
           - "po_no": Extract from "PO No:" field at the top right corner of the document (e.g., "1113610")
           - "supplier_currency": Extract currency from "Supplier Currency:" field at the top right corner of the document (e.g., "GBP")
           - "season_year": Extract from "Season Year:" field at the top right corner of the document (e.g., "SS26")
-          - "po_date": Extract from "PO Date:" field at the top of the document (e.g., "09/06/2025").
+          - "po_date": Extract from "PO Date:" field at the top of the document (e.g., "09-06-2025").
 
           **Line Item Fields (per size/quantity row):**
-          - "buyer_delivery_date": Extract the date from Handover for each size row (e.g., "07/10/2025")
-          - "oc_delivery_date": Extract the date from Handover for each size row and subtract 7 days (e.g., "07/10/2025" -> "30/09/2025")
+          - "buyer_delivery_date": Extract the date from Handover for each size row (e.g., "07-10-2025")
+          - "oc_delivery_date": Extract the date from Handover for each size row and subtract 7 days (e.g., "07/10/2025" -> "30-09-2025")
           - "style": Extract the from Style for each size row (e.g., "M4010737A")
           - "colour": Extract from the Colour Description for each size row (e.g., "Montauk Check Red ( CVJ)")
           - "size": Extract the values from the columns between Fit and Handover in for each row (e.g., "XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL")
