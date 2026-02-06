@@ -21,7 +21,6 @@ module Buyers
           - "currency": Extract from "Currency" field (USD, EUR, etc.)
           - "pay_terms": Extract from "Pay Terms" field (e.g., "Net 90 Days - No Deductions")
           - "ship_mode": Extract from "Ship Mode" field (e.g., "OCEAN")
-          - "pack_method": Extract from the "Pack Method" field (e.g., "FOLDED-FLATPACK")
 
           - "buyer": Look at the "Buyer" section at the TOP LEFT of page 1. Extract ONLY the COUNTRY NAME from the address.
             Example: If you see "PVH CORP, 1001 FRONTIER RD, BRIDGEWATER, NJ, 08807, UNITED STATES" → extract "UNITED STATES"
@@ -29,8 +28,8 @@ module Buyers
           - "consignee": Look for the "CONSIGNEE" section (written VERTICALLY on the right side of page 2). Extract ONLY the COUNTRY NAME from this section.
             DO NOT confuse this with "Country Of Origin" which may show "INDIA" - that's the manufacturing country, not the consignee country.
 
-          - "buyer_order_date": Extract from "PO Issue Date" field. Convert format from YYYY/MM/DD to DD.MM.YYYY (e.g., "2025/06/05" becomes "05.06.2025")
-          - "buyer_delivery_date": Extract from "At Cons Date" field. Convert format from YYYYMMDD to DD.MM.YYYY (e.g., "20251107" becomes "07.11.2025"). If not present, set to empty string.
+          - "buyer_order_date": Extract from "PO Issue Date" field. Convert format from YYYY/MM/DD to DD-MM-YYYY (e.g., "2025/06/05" becomes "05-06-2025")
+          - "buyer_delivery_date": Extract from "At Cons Date" field. Convert format from YYYYMMDD to DD-MM-YYYY (e.g., "20251107" becomes "07-11-2025"). If not present, set to empty string.
           - "inco_terms": Extract from "Inco Terms" field (e.g., "FOB,IN")
 
           **Line Item Fields (per size/quantity row):**
@@ -46,7 +45,7 @@ module Buyers
           **CRITICAL EXTRACTION RULES:**
           1. For COUNTRY extraction: Always extract ONLY the country name (last line of address)
           2. For STYLE and COLOR DESCRIPTION: Each Line# has its own values - extract from that specific line item table
-          3. For DATES: Always convert to DD.MM.YYYY format
+          3. For DATES: Always convert to DD-MM-YYYY format
           4. For TOTAL UNITS: Use the total from the specific table this line item belongs to
 
           **IMPORTANT FOR SIZE EXTRACTION:**

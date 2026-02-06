@@ -18,10 +18,10 @@ module Buyers
           - "po_number": Extract from "PO Number" field at the top of the document
           - "currency": Extract from "Payment Currency" field (e.g., USD, EUR, etc.)
           - "payment_terms": Extract from "Payment Terms" field (e.g., 45 Days from invoice 5%)
-          - "date_issued": Extract from "Date Issued" field. Convert format from DD/MM/YYYY to DD.MM.YYYY (e.g., "05/06/2025" becomes "05.06.2025")
+          - "date_issued": Extract from "Date Issued" field. Convert format from DD/MM/YYYY to DD-MM-YYYY (e.g., "05/06/2025" becomes "05-06-2025")
           - "delivery_method": Extract from "Delivery Method" field (e.g., Sea, Land etc)
-          - "handover_window_date": Extract from "Handover Window Start Date" field. Convert format from DD/MM/YYYY to DD.MM.YYYY (e.g., "05/06/2025" becomes "05.06.2025"
-          - "oc_delivery_date": Look for the "Handover Window Start Date" field and subtract 7 days from that date. Eg: if the Handover Window Start Date is 2/3/2026 then the value becomes 23.02.2026. Make sure take into account the number of days in that month.
+          - "handover_window_date": Extract from "Handover Window Start Date" field. Convert format from DD/MM/YYYY to DD-MM-YYYY (e.g., "05/06/2025" becomes "05-06-2025"
+          - "oc_delivery_date": Look for the "Handover Window Start Date" field and subtract 7 days from that date. Eg: if the Handover Window Start Date is 2/3/2026 then the value becomes 23-02-2026. Make sure take into account the number of days in that month.
           - "first_destination": Extract ONLY the country name from "First Destination" (e.g., United Kingdom, Germany etc)
           - "po_total": Look for the "PO Total" label in the file and extract the value right next to that label (e.g., 350, 650 etc)
           - "po_total": Locate the text label "PO Total" and extract the small numeric value that appears immediately to the right or directly beside it (e.g., 350, 650 etc.). Ignore currency or monetary totals such as 4,511.00 or larger multi-digit formatted numbers with commas or decimals.
@@ -30,7 +30,6 @@ module Buyers
           **Line Item Fields (per size/quantity row):**
           - "final_destination": Extract from "Final Destination" field (e.g., FC01 Barnsley)
           - "supplier_ref": Extract from "Supplier Ref." field (e.g., SS MURCIA)
-          - "packing_method": Extract from "Packing Method" field (e.g., FLAT)
           - "website_colour": Extract from "Website Colour" field (e.g., BLUE, BLACK etc)
           - "brand_size": Extract from "Brand Size" field (e.g., M, L, XL etc)
           - "quantity": Extract from "Qty" field (e.g., 195, 111 etc)

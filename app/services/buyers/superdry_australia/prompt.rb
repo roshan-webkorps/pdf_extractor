@@ -17,11 +17,11 @@ module Buyers
           **Header Fields (same for all line items in a PO):**
           - "purchase_order_number": Extract from "PURCHASE ORDER NO::" field at the top right corner of the document (e.g., "570394")
           - "currency": Extract currency from "Currency:" field (e.g., "GBP")
-          - "po_create_date": Extract from "PO Create Date:" field at the top right corner of the document (e.g., "11/08/2025").
+          - "po_create_date": Extract from "PO Create Date:" field at the top right corner of the document (e.g., "11-08-2025").
 
           **Line Item Fields (per size/quantity row):**
-          - "buyer_delivery_date": Extract the date from Shipment Date for each size row (e.g., "3/02/2026 ")
-          - "oc_delivery_date": Extract the date from Shipment Date for each size row and subtract 7 days (e.g., "07/10/2025" -> "30/09/2025")
+          - "buyer_delivery_date": Extract the date from Shipment Date for each size row (e.g., "3-02-2026 ")
+          - "oc_delivery_date": Extract the date from Shipment Date for each size row and subtract 7 days (e.g., "07/10/2025" -> "30-09-2025")
           - "style_no": Extract the from Style No for each size row (e.g., "SM63SS1O")
           - "colour": Extract from the COLOUR CODE and COLOUR DESC for each size row, and return both values (e.g., "HTE - HARBOUR CHECK WHITE")
           - "size": Extract the values from Size for each row (e.g., "S", "M", "L", "XL", "2XL", "3XL")

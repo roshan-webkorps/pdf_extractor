@@ -18,10 +18,10 @@ module Buyers
           - "po_number": Extract from "PO:" field at the top of the document (e.g., "450169606600100")
           - "currency": Extract from "CURRENCY:" field (e.g., "USD")
           - "season": Extract from "SEASON/SEASON YR.:" field (e.g., "SS 2026")
-          - "po_issue_date": Extract from "PO Issue Date:" field, parse it as MM/DD/YYYY format, add 3 days to the parsed date, and return it formatted as DD.MM.YYYY (e.g., convert "08/12/2025" to "15.08.2025"), outputting only the formatted date..
+          - "po_issue_date": Extract from "PO Issue Date:" field, parse it as MM/DD/YYYY format, add 3 days to the parsed date, and return it formatted as DD-MM-YYYY (e.g., convert "08/12/2025" to "15-08-2025"), outputting only the formatted date..
           - "payment_terms": Extract from "Payment Terms:" field (e.g., "Net 90 Days")
           - "shipment_mode": Extract from "Shipment Mode:" field (e.g., "Sea")
-          - "current_crd_date": Extract from "Current CRD Date:" field, parse it as MM/DD/YYYY format, and return it formatted as DD.MM.YYYY (e.g., convert "11/17/2025" to "17.11.2025"), outputting only the formatted date.
+          - "current_crd_date": Extract from "Current CRD Date:" field, parse it as MM/DD/YYYY format, and return it formatted as DD-MM-YYYY (e.g., convert "11/17/2025" to "17-11-2025"), outputting only the formatted date.
           - "shipping_destination": Extract ONLY the country name from "Shipping Destination:" address (e.g., "Czech Republic")
           - "market": Extract from "EMEA Brexit EU or UK:" field (e.g., "EU")
           - "style": Extract from "Style:" field (e.g., "112375590")

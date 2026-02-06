@@ -72,13 +72,14 @@ class ExcelExportService
   end
 
   def add_data_rows(worksheet)
+    string_indexes = [ 1, 12, 13, 14, 15, 16 ]
     @documents.each do |document|
       next unless document.completed? && document.excel_data.present?
 
       document.excel_data.each do |row_data|
-        worksheet.add_row([
+        values = [
           row_data["factory"],
-          row_data["ship_under_po_ref"],
+          row_data["ship_under_po_ref"].to_s,
           row_data["article"],
           row_data["buyer"],
           row_data["buyer_division_dept"],
@@ -89,11 +90,11 @@ class ExcelExportService
           row_data["prod_capacity_booking_no"],
           row_data["order_initiation_date"],
           row_data["payment_terms"],
-          row_data["buyer_po_num"],
-          row_data["summary_buyer_order_ref"],
-          row_data["market_buyer_order_ref"],
-          row_data["destination_buyer_order_ref"],
-          row_data["delivery_buyer_order_ref"],
+          row_data["buyer_po_num"].to_s,
+          row_data["summary_buyer_order_ref"].to_s,
+          row_data["market_buyer_order_ref"].to_s,
+          row_data["destination_buyer_order_ref"].to_s,
+          row_data["delivery_buyer_order_ref"].to_s,
           row_data["buyer_order_date"],
           row_data["order_type"],
           row_data["mode_of_shipment"],
@@ -125,7 +126,12 @@ class ExcelExportService
           row_data["packing_code"],
           row_data["make_to_stock"],
           row_data["split"]
-        ])
+        ]
+
+        types = Array.new(values.length)
+        string_indexes.each { |i| types[i] = :string }
+
+        worksheet.add_row(values, types: types)
       end
     end
   end

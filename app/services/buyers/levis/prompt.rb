@@ -18,7 +18,7 @@ module Buyers
           - "buyer_company": Look for "Invoice To" section first. If "Invoice To" section exists, extract the company name from there. If "Invoice To" section does NOT exist, then extract the company name from the top-left area of the document (usually the first company name listed below any logos/headers). Do NOT extract from "IMPORTER OF RECORD" section under any circumstances.
           - "season": Extract from "Season" or "Season Code" (numbers only)
           - "currency": Extract from "Currency" or "PO Currency" (USD, EUR, etc.)
-          - "buyer_order_date": Extract from "DocDate" or "PO Release Date" (format: DD.MM.YYYY)
+          - "buyer_order_date": Extract from "DocDate" or "PO Release Date" (format: DD-MM-YYYY)
           - "buyer_delivery_date": Extract ONLY from "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" column. DO NOT use "Planned Del. Date", "Planned Delivery Date", or "Planned Cut Date". If "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" is not present, set to empty string.
           - "ship_under_po_ref": Extract from "Generic Material", "Material", or "Product" columns - use the BASE code WITHOUT size suffixes (e.g., "72625-0110" not "72625-0110M")
           - "delivery_country": Extract ONLY the country name from "Delivery Address"
