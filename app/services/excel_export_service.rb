@@ -6,6 +6,8 @@ class ExcelExportService
   def generate
     package = Axlsx::Package.new
     workbook = package.workbook
+    workbook.use_shared_strings = false
+    @text_style = workbook.styles.add_style(format_code: "@")
     worksheet = workbook.add_worksheet(name: "Purchase Orders")
 
     add_header_row(worksheet)
@@ -128,10 +130,13 @@ class ExcelExportService
           row_data["split"]
         ]
 
-        types = Array.new(values.length)
+        types = Array.new(values.length, nil)
         string_indexes.each { |i| types[i] = :string }
 
-        worksheet.add_row(values, types: types)
+        styles = Array.new(values.length, nil)
+        string_indexes.each { |i| styles[i] = @text_style }
+
+        worksheet.add_row(values, types: types, style: styles)
       end
     end
   end
