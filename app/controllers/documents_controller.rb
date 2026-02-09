@@ -97,7 +97,7 @@ class DocumentsController < ApplicationController
   end
 
   def retry
-    @document.update(status: :pending, error_message: nil)
+    @document.update(status: :pending, error_message: nil, is_retry: true)
     DocumentProcessingJob.perform_later(@document.id)
 
     render json: {

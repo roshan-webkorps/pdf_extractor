@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_03_093257) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_09_093421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -53,9 +53,22 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_03_093257) do
     t.string "buyer"
     t.string "buyer_detection", default: "auto"
     t.integer "page_count"
+    t.boolean "is_retry", default: false, null: false
     t.index ["buyer"], name: "index_documents_on_buyer"
     t.index ["created_at"], name: "index_documents_on_created_at"
     t.index ["status"], name: "index_documents_on_status"
+  end
+
+  create_table "ocr_audit_logs", force: :cascade do |t|
+    t.integer "document_id"
+    t.integer "page_count", null: false
+    t.string "operation_type", null: false
+    t.string "buyer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_at"], name: "index_ocr_audit_logs_on_created_at"
+    t.index ["document_id"], name: "index_ocr_audit_logs_on_document_id"
+    t.index ["operation_type"], name: "index_ocr_audit_logs_on_operation_type"
   end
 
   create_table "users", force: :cascade do |t|

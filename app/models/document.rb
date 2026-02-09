@@ -63,6 +63,13 @@ class Document < ApplicationRecord
       extracted_data: data,
       error_message: nil
     )
+
+    OcrAuditLog.create!(
+      buyer:,
+      document_id: id,
+      page_count: page_count,
+      operation_type: is_retry ? "retry" : "initial_scan"
+    )
   end
 
   def mark_as_failed!(error_msg)
