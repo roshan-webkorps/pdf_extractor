@@ -11,6 +11,7 @@ module Buyers
           3. Create one row per line item (size/quantity combination)
           4. DO NOT use default values unless I explicitly specify them
           5. READ CAREFULLY - extract the EXACT field specified, from the EXACT location specified
+          6. ALL dates MUST be in DD-MM-YYYY format (e.g., "25-12-2024", not "25/12/2024" or "12-25-2024")
 
           **EXTRACT THESE FIELDS PER PO:**
 
@@ -18,10 +19,10 @@ module Buyers
           - "po_number": Extract from "PO:" field at the top of the document (e.g., "450169606600100")
           - "currency": Extract from "CURRENCY:" field (e.g., "USD")
           - "season": Extract from "SEASON/SEASON YR.:" field (e.g., "SS 2026")
-          - "po_issue_date": Extract from "PO Issue Date:" field, parse it as MM/DD/YYYY format, add 3 days to the parsed date, and return it formatted as DD-MM-YYYY (e.g., convert "08/12/2025" to "15-08-2025"), outputting only the formatted date..
+          - "po_issue_date": Extract from "PO Issue Date:" field in DD-MM-YYYY format, parse it as MM/DD/YYYY, add 3 days to the parsed date, and return formatted as DD-MM-YYYY (e.g., convert "08/12/2025" to "15-08-2025"), outputting only the formatted date.
           - "payment_terms": Extract from "Payment Terms:" field (e.g., "Net 90 Days")
           - "shipment_mode": Extract from "Shipment Mode:" field (e.g., "Sea")
-          - "current_crd_date": Extract from "Current CRD Date:" field, parse it as MM/DD/YYYY format, and return it formatted as DD-MM-YYYY (e.g., convert "11/17/2025" to "17-11-2025"), outputting only the formatted date.
+          - "current_crd_date": Extract from "Current CRD Date:" field in DD-MM-YYYY format, parse it as MM/DD/YYYY, and return formatted as DD-MM-YYYY (e.g., convert "11/17/2025" to "17-11-2025"), outputting only the formatted date.
           - "shipping_destination": Extract ONLY the country name from "Shipping Destination:" address (e.g., "Czech Republic")
           - "market": Extract from "EMEA Brexit EU or UK:" field (e.g., "EU")
           - "style": Extract from "Style:" field (e.g., "112375590")
@@ -63,6 +64,7 @@ module Buyers
           - One object per PO, with line_items array
           - Extract ALL line items with their actual sizes and quantities
           - Each size in the breakdown table should be a separate line item
+          - ALL dates must be in DD-MM-YYYY format (day-month-year with dashes)
         INSTRUCTIONS
       end
     end

@@ -10,6 +10,7 @@ module Buyers
           2. For each PO, extract ONLY the fields listed below - set fields to empty string if not found
           3. Create one row per line item (size/quantity combination)
           4. DO NOT use default values unless I explicitly specify them
+          5. ALL dates MUST be in DD-MM-YYYY format (e.g., "25-12-2024", not "25/12/2024" or "12-25-2024")
 
           **EXTRACT THESE FIELDS PER PO:**
 
@@ -18,8 +19,8 @@ module Buyers
           - "buyer_company": Look for "Invoice To" section first. If "Invoice To" section exists, extract the company name from there. If "Invoice To" section does NOT exist, then extract the company name from the top-left area of the document (usually the first company name listed below any logos/headers). Do NOT extract from "IMPORTER OF RECORD" section under any circumstances.
           - "season": Extract from "Season" or "Season Code" (numbers only)
           - "currency": Extract from "Currency" or "PO Currency" (USD, EUR, etc.)
-          - "buyer_order_date": Extract from "DocDate" or "PO Release Date" (format: DD-MM-YYYY)
-          - "buyer_delivery_date": Extract ONLY from "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" column. DO NOT use "Planned Del. Date", "Planned Delivery Date", or "Planned Cut Date". If "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" is not present, set to empty string.
+          - "buyer_order_date": Extract from "DocDate" or "PO Release Date" in DD-MM-YYYY format
+          - "buyer_delivery_date": Extract ONLY from "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" column in DD-MM-YYYY format. DO NOT use "Planned Del. Date", "Planned Delivery Date", or "Planned Cut Date". If "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" is not present, set to empty string.
           - "ship_under_po_ref": Extract from "Generic Material", "Material", or "Product" columns - use the BASE code WITHOUT size suffixes (e.g., "72625-0110" not "72625-0110M")
           - "delivery_country": Extract ONLY the country name from "Delivery Address"
           - "unit_price": Extract from "PO Unit Price"
@@ -37,6 +38,7 @@ module Buyers
           - "buyer_delivery_date" should ONLY come from "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date"
           - IGNORE "Planned Del. Date", "Planned Delivery Date", "Planned Cut Date"
           - If no "Planned HOD" or "Original Ex-facDate" or "Planned Ex-fac Date" column exists, leave buyer_delivery_date empty
+          - ALL dates must be formatted as DD-MM-YYYY
 
           **IMPORTANT FOR COLOR EXTRACTION:**
           - "ffc_description" should ONLY come from "FFC DESCRIPTION"
@@ -55,8 +57,8 @@ module Buyers
               "buyer_company": "Levi Strauss Global Trading Co. Ltd",
               "season": "251",
               "currency": "USD",
-              "buyer_order_date": "13.06.2024",
-              "buyer_delivery_date": "10.10.2024",
+              "buyer_order_date": "13-06-2024",
+              "buyer_delivery_date": "10-10-2024",
               "ship_under_po_ref": "A5772-0014",
               "delivery_country": "KOREA",
               "unit_price": "9.78",
@@ -90,6 +92,7 @@ module Buyers
           - Extract ALL line items with their actual sizes and quantities
           - Always use BASE material codes for "ship_under_po_ref" (remove size suffixes)
           - For dates, be very specific: "Original ExfacDate" NOT "Planned Del. Date"
+          - ALL dates must be in DD-MM-YYYY format (day-month-year with dashes)
         INSTRUCTIONS
       end
     end
