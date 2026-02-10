@@ -11,6 +11,7 @@ module Buyers
           3. Create one row per line item (size/quantity combination)
           4. DO NOT use default values unless I explicitly specify them
           5. READ CAREFULLY - extract the EXACT field specified, from the EXACT location specified
+          6. ALL dates MUST be in DD-MM-YYYY format (e.g., "25-12-2024", not "25/12/2024" or "12-25-2024")
 
           **EXTRACT THESE FIELDS PER PO:**
 
@@ -45,6 +46,7 @@ module Buyers
           - One object per Order no., with line_items array
           - Extract ALL line items with their actual Name, Item number, Order qty and Purch price.
           - Each Item number in the breakdown table should be a separate line item
+          - ALL dates must be in DD-MM-YYYY format (day-month-year with dashes)
         INSTRUCTIONS
       end
     end

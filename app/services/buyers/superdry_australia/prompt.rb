@@ -11,17 +11,18 @@ module Buyers
           3. Create one row per line item (size/quantity combination)
           4. DO NOT use default values unless I explicitly specify them
           5. READ CAREFULLY - extract the EXACT field specified, from the EXACT location specified
+          6. ALL dates MUST be in DD-MM-YYYY format (e.g., "25-12-2024", not "25/12/2024" or "12-25-2024")
 
           **EXTRACT THESE FIELDS PER PO:**
 
           **Header Fields (same for all line items in a PO):**
           - "purchase_order_number": Extract from "PURCHASE ORDER NO::" field at the top right corner of the document (e.g., "570394")
           - "currency": Extract currency from "Currency:" field (e.g., "GBP")
-          - "po_create_date": Extract from "PO Create Date:" field at the top right corner of the document (e.g., "11-08-2025").
+          - "po_create_date": Extract from "PO Create Date:" field at the top right corner of the document in DD-MM-YYYY format (e.g., "11-08-2025").
 
           **Line Item Fields (per size/quantity row):**
-          - "buyer_delivery_date": Extract the date from Shipment Date for each size row (e.g., "3-02-2026 ")
-          - "oc_delivery_date": Extract the date from Shipment Date for each size row and subtract 7 days (e.g., "07/10/2025" -> "30-09-2025")
+          - "buyer_delivery_date": Extract the date from Shipment Date for each size row in DD-MM-YYYY format (e.g., "03-02-2026")
+          - "oc_delivery_date": Extract the date from Shipment Date for each size row, subtract 7 days, and return in DD-MM-YYYY format (e.g., "07/10/2025" -> "30-09-2025")
           - "style_no": Extract the from Style No for each size row (e.g., "SM63SS1O")
           - "colour": Extract from the COLOUR CODE and COLOUR DESC for each size row, and return both values (e.g., "HTE - HARBOUR CHECK WHITE")
           - "size": Extract the values from Size for each row (e.g., "S", "M", "L", "XL", "2XL", "3XL")
@@ -48,6 +49,7 @@ module Buyers
           - One object per PURCHASE ORDER NO, with line_items array
           - Extract ALL line items with their COLOUR CODE and COLOUR DESC, Style no, Shipment Date, Price, FG ORDER QTY
           - Each Size in the breakdown table should be a separate line item
+          - ALL dates must be in DD-MM-YYYY format (day-month-year with dashes)
         INSTRUCTIONS
       end
     end

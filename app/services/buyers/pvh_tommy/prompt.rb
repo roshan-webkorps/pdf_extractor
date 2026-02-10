@@ -12,6 +12,7 @@ module Buyers
           4. DO NOT use default values unless I explicitly specify them
           5. READ CAREFULLY - extract the EXACT field specified, from the EXACT location specified
           6. IMPORTANT: A PO may have multiple Line# entries with different styles/colors - each size in each Line# is a separate line item
+          7. ALL dates MUST be in DD-MM-YYYY format (e.g., "25-12-2024", not "25/12/2024" or "2024-12-25")
 
           **EXTRACT THESE FIELDS PER PO:**
 
@@ -28,8 +29,8 @@ module Buyers
           - "consignee": Look for the "CONSIGNEE" section (written VERTICALLY on the right side of page 2). Extract ONLY the COUNTRY NAME from this section.
             DO NOT confuse this with "Country Of Origin" which may show "INDIA" - that's the manufacturing country, not the consignee country.
 
-          - "buyer_order_date": Extract from "PO Issue Date" field. Convert format from YYYY/MM/DD to DD-MM-YYYY (e.g., "2025/06/05" becomes "05-06-2025")
-          - "buyer_delivery_date": Extract from "At Cons Date" field. Convert format from YYYYMMDD to DD-MM-YYYY (e.g., "20251107" becomes "07-11-2025"). If not present, set to empty string.
+          - "buyer_order_date": Extract from "PO Issue Date" field in DD-MM-YYYY format. Convert from YYYY/MM/DD to DD-MM-YYYY (e.g., "2025/06/05" becomes "05-06-2025")
+          - "buyer_delivery_date": Extract from "At Cons Date" field in DD-MM-YYYY format. Convert from YYYYMMDD to DD-MM-YYYY (e.g., "20251107" becomes "07-11-2025"). If not present, set to empty string.
           - "inco_terms": Extract from "Inco Terms" field (e.g., "FOB,IN")
 
           **Line Item Fields (per size/quantity row):**
@@ -102,6 +103,7 @@ module Buyers
           - Extract ALL line items with their actual sizes and quantities
           - Each size in the breakdown table should be a separate line item
           - Remember: If multiple tables exist in a PO, each table group has its own "total_units" value
+          - ALL dates must be in DD-MM-YYYY format (day-month-year with dashes)
         INSTRUCTIONS
       end
     end

@@ -11,6 +11,7 @@ module Buyers
           3. Create one row per line item (size/quantity combination)
           4. DO NOT use default values unless I explicitly specify them
           5. READ CAREFULLY - extract the EXACT field specified, from the EXACT location specified
+          6. ALL dates MUST be in DD-MM-YYYY format (e.g., "25-12-2024", not "25/12/2024" or "12-25-2024")
 
           **EXTRACT THESE FIELDS PER PO:**
 
@@ -18,11 +19,11 @@ module Buyers
           - "po_no": Extract from "PO No:" field at the top right corner of the document (e.g., "1113610")
           - "supplier_currency": Extract currency from "Supplier Currency:" field at the top right corner of the document (e.g., "GBP")
           - "season_year": Extract from "Season Year:" field at the top right corner of the document (e.g., "SS26")
-          - "po_date": Extract from "PO Date:" field at the top of the document (e.g., "09-06-2025").
+          - "po_date": Extract from "PO Date:" field at the top of the document in DD-MM-YYYY format (e.g., "09-06-2025").
 
           **Line Item Fields (per size/quantity row):**
-          - "buyer_delivery_date": Extract the date from Handover for each size row (e.g., "07-10-2025")
-          - "oc_delivery_date": Extract the date from Handover for each size row and subtract 7 days (e.g., "07/10/2025" -> "30-09-2025")
+          - "buyer_delivery_date": Extract the date from Handover for each size row in DD-MM-YYYY format (e.g., "07-10-2025")
+          - "oc_delivery_date": Extract the date from Handover for each size row, subtract 7 days, and return in DD-MM-YYYY format (e.g., "07/10/2025" -> "30-09-2025")
           - "style": Extract the from Style for each size row (e.g., "M4010737A")
           - "colour": Extract from the Colour Description for each size row (e.g., "Montauk Check Red ( CVJ)")
           - "size": Extract the values from the columns between Fit and Handover in for each row (e.g., "XXS", "XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL")
@@ -49,6 +50,7 @@ module Buyers
           - One object per PO No, with line_items array
           - Extract ALL line items with their Colour Description, Style, Handover, Cost
           - Each Size in the breakdown table should be a separate line item
+          - ALL dates must be in DD-MM-YYYY format (day-month-year with dashes)
         INSTRUCTIONS
       end
     end
