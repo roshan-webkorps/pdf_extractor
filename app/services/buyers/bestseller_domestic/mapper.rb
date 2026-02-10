@@ -51,7 +51,8 @@ module Buyers
           "first_buyer_delivery_date" => "",
           "packing_code" => "",
           "make_to_stock" => "",
-          "split" => ""
+          "split" => "",
+          "other_instruction" => ""
         }
       end
     end

@@ -191,7 +191,7 @@ const HomePage = () => {
 
     try {
       const blob = await documentsAPI.exportSelected(selectedDocuments);
-      const filename = `selected_documents_export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const filename = `StandardSalesOrder.xlsx`;
       downloadBlob(blob, filename);
       showMessage('success', `${selectedDocuments.length} document(s) exported successfully`);
       setSelectedDocuments([]);
@@ -205,7 +205,7 @@ const HomePage = () => {
     try {
       const blob = await documentsAPI.exportDocument(documentId);
       const document = documents.find(d => d.id === documentId);
-      const filename = `${document.name}_export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const filename = `StandardSalesOrder.xlsx`;
       downloadBlob(blob, filename);
       showMessage('success', 'Document exported successfully');
     } catch (error) {
@@ -217,7 +217,7 @@ const HomePage = () => {
   const handleExportAll = async () => {
     try {
       const blob = await documentsAPI.exportAll();
-      const filename = `all_purchase_orders_export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const filename = `StandardSalesOrder.xlsx`;
       downloadBlob(blob, filename);
       showMessage('success', 'All documents exported successfully');
     } catch (error) {

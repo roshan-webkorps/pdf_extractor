@@ -51,7 +51,7 @@ const ShowPage = ({ documentId }) => {
     setIsExporting(true);
     try {
       const blob = await documentsAPI.exportDocument(documentId);
-      const filename = `${document.name}_export_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      const filename = `StandardSalesOrder.xlsx`;
       downloadBlob(blob, filename);
       showMessage('success', 'Document exported successfully');
     } catch (error) {

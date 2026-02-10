@@ -6,9 +6,9 @@ class ExcelExportService
   def generate
     package = Axlsx::Package.new
     workbook = package.workbook
+    @number_style = workbook.styles.add_style(format_code: "0")
     workbook.use_shared_strings = false
-    @text_style = workbook.styles.add_style(format_code: "@")
-    worksheet = workbook.add_worksheet(name: "Purchase Orders")
+    worksheet = workbook.add_worksheet(name: "Sheet1")
 
     add_header_row(worksheet)
     add_data_rows(worksheet)
@@ -45,7 +45,7 @@ class ExcelExportService
       "PCD Date",
       "Original GAC Date",
       "GAC Date",
-      "Raw Material ETA",
+      "Raw Matetrial ETA",
       "Country of Final Destination",
       "Final Destination",
       "Market",
@@ -61,27 +61,28 @@ class ExcelExportService
       "Zone",
       "Internal Lot No.",
       "Buyer Lot No.",
-      "Delivery OCID",
+      "DeliveryOCID",
       "Fulfillment Type",
       "Initial PCD Date",
-      "First Buyer Delivery Date",
-      "Packing Code (SKU)",
+      "FirstBuyerDeliveryDate",
+      "Packing Code(SKU)",
       "Make to Stock",
-      "Split"
+      "Split",
+      "Other Instruction"
     ]
 
     worksheet.add_row headers, style: header_style(worksheet)
   end
 
   def add_data_rows(worksheet)
-    string_indexes = [ 1, 12, 13, 14, 15, 16 ]
+    number_column_indexes = [ 1, 12, 13, 14, 15, 16 ]
     @documents.each do |document|
       next unless document.completed? && document.excel_data.present?
 
       document.excel_data.each do |row_data|
         values = [
           row_data["factory"],
-          row_data["ship_under_po_ref"].to_s,
+          row_data["ship_under_po_ref"],
           row_data["article"],
           row_data["buyer"],
           row_data["buyer_division_dept"],
@@ -92,11 +93,11 @@ class ExcelExportService
           row_data["prod_capacity_booking_no"],
           row_data["order_initiation_date"],
           row_data["payment_terms"],
-          row_data["buyer_po_num"].to_s,
-          row_data["summary_buyer_order_ref"].to_s,
-          row_data["market_buyer_order_ref"].to_s,
-          row_data["destination_buyer_order_ref"].to_s,
-          row_data["delivery_buyer_order_ref"].to_s,
+          row_data["buyer_po_num"],
+          row_data["summary_buyer_order_ref"],
+          row_data["market_buyer_order_ref"],
+          row_data["destination_buyer_order_ref"],
+          row_data["delivery_buyer_order_ref"],
           row_data["buyer_order_date"],
           row_data["order_type"],
           row_data["mode_of_shipment"],
@@ -127,16 +128,14 @@ class ExcelExportService
           row_data["first_buyer_delivery_date"],
           row_data["packing_code"],
           row_data["make_to_stock"],
-          row_data["split"]
+          row_data["split"],
+          row_data["other_instruction"]
         ]
 
-        types = Array.new(values.length, nil)
-        string_indexes.each { |i| types[i] = :string }
-
         styles = Array.new(values.length, nil)
-        string_indexes.each { |i| styles[i] = @text_style }
+        number_column_indexes.each { |i| styles[i] = @number_style }
 
-        worksheet.add_row(values, types: types, style: styles)
+        worksheet.add_row(values, style: styles)
       end
     end
   end

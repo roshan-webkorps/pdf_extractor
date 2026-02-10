@@ -124,11 +124,9 @@ class DocumentsController < ApplicationController
       excel_service = ExcelExportService.new(documents_with_data)
       package = excel_service.generate
 
-      filename = "selected_documents_export_#{Time.current.strftime('%Y%m%d_%H%M%S')}_#{documents_with_data.count}_docs.xlsx"
-
       send_data package.to_stream.read,
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                filename: filename,
+                filename: "StandardSalesOrder.xlsx",
                 disposition: "attachment"
 
     rescue => e
@@ -157,11 +155,9 @@ class DocumentsController < ApplicationController
       excel_service = ExcelExportService.new([ @document ])
       package = excel_service.generate
 
-      filename = "#{sanitize_filename(@document.name)}_export_#{Time.current.strftime('%Y%m%d_%H%M%S')}.xlsx"
-
       send_data package.to_stream.read,
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                filename: filename,
+                filename: "StandardSalesOrder.xlsx",
                 disposition: "attachment"
 
     rescue => e
@@ -186,11 +182,9 @@ class DocumentsController < ApplicationController
       excel_service = ExcelExportService.new(documents_with_data)
       package = excel_service.generate
 
-      filename = "all_purchase_orders_export_#{Time.current.strftime('%Y%m%d_%H%M%S')}_#{documents_with_data.count}_docs.xlsx"
-
       send_data package.to_stream.read,
                 type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                filename: filename,
+                filename: "StandardSalesOrder.xlsx",
                 disposition: "attachment"
 
     rescue => e
@@ -219,10 +213,6 @@ class DocumentsController < ApplicationController
 
   def documents_json
     @documents.map { |doc| document_json(doc) }
-  end
-
-  def sanitize_filename(filename)
-    filename.gsub(/[^\w\s_-]+/, "_").gsub(/\s+/, "_").strip
   end
 
   def document_json(document)

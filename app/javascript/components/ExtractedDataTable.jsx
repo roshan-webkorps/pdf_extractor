@@ -47,7 +47,7 @@ const ExtractedDataTable = ({ data, documentName }) => {
     { key: 'pcd_date', label: 'PCD Date' },
     { key: 'original_gac_date', label: 'Original GAC Date' },
     { key: 'gac_date', label: 'GAC Date' },
-    { key: 'raw_material_eta', label: 'Raw Material ETA' },
+    { key: 'raw_material_eta', label: 'Raw Matetrial ETA' },
     { key: 'country_of_final_destination', label: 'Country of Final Destination' },
     { key: 'final_destination', label: 'Final Destination' },
     { key: 'market', label: 'Market' },
@@ -63,13 +63,14 @@ const ExtractedDataTable = ({ data, documentName }) => {
     { key: 'zone', label: 'Zone' },
     { key: 'internal_lot_no', label: 'Internal Lot No.' },
     { key: 'buyer_lot_no', label: 'Buyer Lot No.' },
-    { key: 'delivery_ocid', label: 'Delivery OCID' },
+    { key: 'delivery_ocid', label: 'DeliveryOCID' },
     { key: 'fulfillment_type', label: 'Fulfillment Type' },
     { key: 'initial_pcd_date', label: 'Initial PCD Date' },
-    { key: 'first_buyer_delivery_date', label: 'First Buyer Delivery Date' },
-    { key: 'packing_code', label: 'Packing Code (SKU)' },
+    { key: 'first_buyer_delivery_date', label: 'FirstBuyerDeliveryDate' },
+    { key: 'packing_code', label: 'Packing Code(SKU)' },
     { key: 'make_to_stock', label: 'Make to Stock' },
-    { key: 'split', label: 'Split' }
+    { key: 'split', label: 'Split' },
+    { key: 'other_instruction', label: 'Other Instruction'}
   ]
 
   return (
