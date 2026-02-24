@@ -3,8 +3,8 @@ require "combine_pdf"
 require "set"
 
 class PdfSplittingService
-  BATCH_SIZE = 5
-  PO_THRESHOLD = 5
+  BATCH_SIZE = 4
+  PO_THRESHOLD = 4
 
   PO_PATTERNS = [
     /PO NUMBER\s+([A-Z]?\d+)/i,                    # e.g., "PO NUMBER 1000606063" or "PO NUMBER T530038084"
