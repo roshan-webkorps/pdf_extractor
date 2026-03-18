@@ -24,8 +24,7 @@ module Buyers
           - "handover_window_date": Extract from "Handover Window Start Date" field in DD-MM-YYYY format. Convert from DD/MM/YYYY to DD-MM-YYYY (e.g., "05/06/2025" becomes "05-06-2025")
           - "oc_delivery_date": Look for the "Handover Window Start Date" field and subtract 7 days from that date in DD-MM-YYYY format. Eg: if the Handover Window Start Date is 2/3/2026 then the value becomes 23-02-2026. Make sure take into account the number of days in that month.
           - "first_destination": Extract ONLY the country name from "First Destination" (e.g., United Kingdom, Germany etc)
-          - "po_total": Look for the "PO Total" label in the file and extract the value right next to that label (e.g., 350, 650 etc)
-          - "po_total": Locate the text label "PO Total" and extract the small numeric value that appears immediately to the right or directly beside it (e.g., 350, 650 etc.). Ignore currency or monetary totals such as 4,511.00 or larger multi-digit formatted numbers with commas or decimals.
+          - "po_total": Locate the text label "PO Total" and extract the small numeric value that appears immediately to the right or directly beside it (e.g., 350, 650 etc.). Ignore currency or monetary totals such as 4,511.00 or decimals. Make sure you remove the `,` from this value and parse this as a whole number.
           - "shipping_terms": Extract from "Shipping Terms" field (e.g., FOB)
 
           **Line Item Fields (per size/quantity row):**
