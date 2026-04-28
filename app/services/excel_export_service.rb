@@ -68,7 +68,9 @@ class ExcelExportService
       "Packing Code(SKU)",
       "Make to Stock",
       "Split",
-      "Other Instruction"
+      "Other Instruction",
+      "Extra Production %",
+      "Upcharge"
     ]
 
     worksheet.add_row headers, style: header_style(worksheet)
@@ -129,7 +131,9 @@ class ExcelExportService
           row_data["packing_code"],
           row_data["make_to_stock"],
           row_data["split"],
-          row_data["other_instruction"]
+          row_data["other_instruction"],
+          row_data["extra_production_pct"],
+          row_data["upcharge"]
         ]
 
         styles = Array.new(values.length, nil)

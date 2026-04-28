@@ -1,4 +1,6 @@
 class DocumentsController < ApplicationController
+  include ExportErrorHandler
+
   before_action :set_document, only: [ :show, :update, :destroy, :download_original, :export, :retry ]
 
   def index
@@ -74,6 +76,44 @@ class DocumentsController < ApplicationController
         errors: @document.errors.full_messages
       }, status: :unprocessable_entity
     end
+  end
+
+  def batch
+    files = params[:files]
+
+    if files.blank?
+      return render json: { error: "No files provided" }, status: :unprocessable_entity
+    end
+
+    if files.length > 5
+      return render json: { error: "Maximum 5 files per upload batch" }, status: :unprocessable_entity
+    end
+
+    batch_upload_id = SecureRandom.uuid
+    created = []
+    errors  = []
+
+    files.each do |file|
+      doc = Document.new(
+        name:            File.basename(file.original_filename, ".*"),
+        file:            file,
+        batch_upload_id: batch_upload_id
+      )
+
+      if doc.save
+        DocumentProcessingJob.perform_later(doc.id)
+        created << document_json(doc)
+      else
+        errors << { filename: file.original_filename, errors: doc.errors.full_messages }
+      end
+    end
+
+    render json: {
+      message:         "#{created.length} file(s) uploaded and queued for processing",
+      batch_upload_id: batch_upload_id,
+      documents:       created,
+      errors:          errors
+    }, status: :created
   end
 
   def update
@@ -232,7 +272,8 @@ class DocumentsController < ApplicationController
       error_message: document.error_message,
       total_pos: document.total_pos_count,
       total_line_items: document.total_line_items_count,
-      page_count: document.page_count
+      page_count: document.page_count,
+      batch_upload_id: document.batch_upload_id
     }
 
     if document.completed?
@@ -242,4 +283,5 @@ class DocumentsController < ApplicationController
 
     base_data
   end
+
 end

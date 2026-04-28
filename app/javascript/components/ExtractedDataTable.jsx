@@ -70,7 +70,9 @@ const ExtractedDataTable = ({ data, documentName }) => {
     { key: 'packing_code', label: 'Packing Code(SKU)' },
     { key: 'make_to_stock', label: 'Make to Stock' },
     { key: 'split', label: 'Split' },
-    { key: 'other_instruction', label: 'Other Instruction'}
+    { key: 'other_instruction', label: 'Other Instruction'},
+    { key: 'extra_production_pct', label: 'Extra Production %' },
+    { key: 'upcharge', label: 'Upcharge' }
   ]
 
   return (

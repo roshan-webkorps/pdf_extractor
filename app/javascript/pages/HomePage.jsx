@@ -81,8 +81,19 @@ const HomePage = () => {
   const handleFileUpload = async (files) => {
     setIsUploading(true);
     try {
-      await documentsAPI.upload(files);
-      showMessage('success', `Successfully uploaded ${files.length} file${files.length !== 1 ? 's' : ''}. Processing started.`);
+      const response = await documentsAPI.upload(files);
+
+      const successCount = response.documents?.length || 0;
+      const errorCount   = response.errors?.length   || 0;
+
+      if (errorCount > 0 && successCount === 0) {
+        showMessage('error', `Upload failed for all ${errorCount} file(s). Please check the files and try again.`);
+      } else if (errorCount > 0) {
+        showMessage('warning', `${successCount} file(s) uploaded successfully. ${errorCount} file(s) failed validation.`);
+      } else {
+        showMessage('success', `${successCount} file(s) uploaded. Processing started.`);
+      }
+
       setShowUploadModal(false);
       await loadDocuments(pagination.current_page);
     } catch (error) {

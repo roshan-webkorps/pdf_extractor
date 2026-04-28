@@ -84,13 +84,11 @@ export const documentsAPI = {
   
   upload: async (files) => {
     const formData = new FormData();
-    
     files.forEach((file) => {
-      formData.append('document[file]', file);
-      formData.append('document[name]', file.name.replace(/\.[^/.]+$/, ''));
+      formData.append('files[]', file);
     });
-    
-    return apiRequest('/documents', {
+
+    return apiRequest('/documents/batch', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': getCsrfToken(),

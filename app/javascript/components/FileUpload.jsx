@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 
 const FileUpload = ({ onUpload, isUploading = false, onClose }) => {
+  const MAX_FILES = 5;
   const [dragActive, setDragActive] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
@@ -32,17 +33,24 @@ const FileUpload = ({ onUpload, isUploading = false, onClose }) => {
   };
 
   const handleFiles = (files) => {
-    // Filter for PDF and image files
+    // Filter for PDF and image files under 10MB
     const validFiles = files.filter(file => {
       const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
-      return validTypes.includes(file.type) && file.size <= 10 * 1024 * 1024; // 10MB limit
+      return validTypes.includes(file.type) && file.size <= 10 * 1024 * 1024;
     });
 
     if (validFiles.length !== files.length) {
       alert('Some files were skipped. Only PDF and image files under 10MB are allowed.');
     }
 
-    setSelectedFiles(validFiles);
+    setSelectedFiles(prev => {
+      const combined = [...prev, ...validFiles];
+      if (combined.length > MAX_FILES) {
+        alert(`Maximum ${MAX_FILES} files per upload. Only the first ${MAX_FILES} are kept.`);
+        return combined.slice(0, MAX_FILES);
+      }
+      return combined;
+    });
   };
 
   const handleUpload = () => {
@@ -89,7 +97,7 @@ const FileUpload = ({ onUpload, isUploading = false, onClose }) => {
             <div className="upload-dropzone-content">
               <div className="upload-icon">📁</div>
               <p>Drag and drop files here, or click to select</p>
-              <p className="upload-hint">PDF and image files only (max 10MB each)</p>
+              <p className="upload-hint">PDF and image files only (max 10MB each · up to {MAX_FILES} files)</p>
             </div>
             
             <input
