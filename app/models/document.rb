@@ -14,6 +14,7 @@ class Document < ApplicationRecord
   scope :failed, -> { where(status: "failed") }
   scope :processing, -> { where(status: "processing") }
   scope :pending, -> { where(status: "pending") }
+  scope :for_batch, ->(batch_id) { where(batch_upload_id: batch_id) }
 
   def completed?
     status == "completed"

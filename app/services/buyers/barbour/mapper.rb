@@ -52,7 +52,9 @@ module Buyers
           "packing_code" => nil,
           "make_to_stock" => nil,
           "split" => nil,
-          "other_instruction" => nil
+          "other_instruction" => nil,
+          "extra_production_pct" => nil,
+          "upcharge" => nil
         }
       end
     end

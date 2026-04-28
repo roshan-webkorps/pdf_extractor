@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_09_093421) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_25_172002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,6 +54,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_09_093421) do
     t.string "buyer_detection", default: "auto"
     t.integer "page_count"
     t.boolean "is_retry", default: false, null: false
+    t.string "batch_upload_id"
+    t.index ["batch_upload_id"], name: "index_documents_on_batch_upload_id"
     t.index ["buyer"], name: "index_documents_on_buyer"
     t.index ["created_at"], name: "index_documents_on_created_at"
     t.index ["status"], name: "index_documents_on_status"

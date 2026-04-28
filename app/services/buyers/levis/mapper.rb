@@ -3,7 +3,7 @@ module Buyers
     class Mapper
       def self.build_excel_row(header, line_item)
         {
-          "factory" => nil,
+          "factory" => "TKL KNITS (INDIA) PRIVATE LIMITED",
           "ship_under_po_ref" => header["ship_under_po_ref"] || nil,
           "article" => nil,
           "buyer" => header["buyer_company"] || nil,
@@ -51,7 +51,9 @@ module Buyers
           "packing_code" => nil,
           "make_to_stock" => nil,
           "split" => nil,
-          "other_instruction" => nil
+          "other_instruction" => nil,
+          "extra_production_pct" => nil,
+          "upcharge" => nil
         }
       end
     end

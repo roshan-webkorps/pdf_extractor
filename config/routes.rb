@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     end
 
     collection do
+      post :batch
       get :export_all
       get :export_all_summary
       post :export_selected

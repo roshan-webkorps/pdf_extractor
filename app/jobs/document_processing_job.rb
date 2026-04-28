@@ -1,5 +1,5 @@
 class DocumentProcessingJob < ApplicationJob
-  queue_as :default
+  queue_as :ocr
 
   retry_on StandardError, attempts: 3
 
